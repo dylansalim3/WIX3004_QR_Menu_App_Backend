@@ -2,12 +2,14 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const UserRepository = require("../repository/UserRepository");
 const RoleRepository = require("../repository/RoleRepository");
-const {buildResetPasswordEmail, buildVerificationEmail, sendEmail} = require('../utils/emailUtils');
-const {USERS, COMPLETE_REGISTRATION} = require('./../constant/route-constant');
+const { buildResetPasswordEmail, buildVerificationEmail, sendEmail } = require('../utils/emailUtils');
+const { MERCHANT } = require('./../constant/constant');
+const { USERS, COMPLETE_REGISTRATION } = require('./../constant/route-constant');
+const { sequelize } = require('sequelize');
 
 exports.getUserById = (req, res) => {
     UserRepository.findUserById(req.params.id).then(result => {
-        res.send({userdata: result});
+        res.send({ userdata: result });
     });
 }
 
@@ -21,7 +23,7 @@ exports.updateUserProfile = (req, res) => {
 
     UserRepository.updateUserProfile(firstName, lastName, profileImg, address, phoneNum, userId)
         .then((result) => {
-            res.send({result: result});
+            res.send({ result: result });
         });
 }
 
@@ -56,10 +58,15 @@ exports.registerUser = async (req, res) => {
                                 user.verification_hash = verification_hash;
                                 user.save();
                                 const registrationLink = 'http://' + req.headers.host + USERS + COMPLETE_REGISTRATION + '/' + verification_hash;
-                                const {subject, text} = buildVerificationEmail(userData.email, registrationLink);
+                                const { subject, text } = buildVerificationEmail(userData.email, registrationLink);
                                 await sendEmail(userData.email, subject, text, res);
 
-                                res.json({status: user.email + ' registered'});
+                                let mydata = JSON.stringify(user);
+                                mydata = JSON.parse(mydata);
+                                const role = await RoleRepository.findRoleById(user.role_id);
+                                mydata['role'] = role.name;
+                                let token = jwt.sign(mydata, process.env.SECRET_KEY);
+                                res.send({ token: token });
                                 return user;
                             });
                     });
@@ -67,59 +74,46 @@ exports.registerUser = async (req, res) => {
                     throw Error("User already exists");
                 }
             }).catch((err) => {
-            res.status(500).send(err.toString());
-        });
+                res.status(500).send(err.toString());
+            });
     } else {
         res.status(404).json('error: Role is invalid');
     }
 }
 
 
-exports.loginWithRole = (req, res) => {
+exports.login = (req, res) => {
     UserRepository.findUserByEmail(req.body.email)
-        .then((results) => {
+        .then(async (results) => {
             if (results) {
                 console.log('user exists');
 
                 if (bcrypt.compareSync(req.body.password, results.password)) {
                     let mydata = JSON.stringify(results);
                     mydata = JSON.parse(mydata);
-                    mydata['role'] = req.body.role;
+                    const role = await RoleRepository.findRoleById(results.role_id);
+                    mydata['role'] = role.name;
                     console.log(JSON.stringify(mydata));
                     let token = jwt.sign(mydata, process.env.SECRET_KEY);
                     console.log("Correct password");
-                    //check role
-                    UserRepository.findUserByEmailAndRole(req.body.email, req.body.role)
-                        .then((results) => {
-                            if (results) {
-                                res.send({token: token});
-                            } else {
-                                console.log('Wrong role selected');
-                                res.status(400).json({error: 'Wrong role selected'});
-                            }
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                            res.status(400).json({error: "error is here"});
-                        });
-
+                    res.send({ token: token });
 
                 } else {
                     console.log('Wrong password');
-                    res.status(400).json({error: 'Wrong password'});
+                    res.status(400).json({ error: 'Wrong password' });
                 }
             } else {
                 console.log('user does not exist');
-                res.status(404).json({error: "User does not exist"})
+                res.status(404).json({ error: "User does not exist" })
             }
         })
         .catch((err) => {
-            res.status(400).json({error: err.toString()});
+            res.status(400).json({ error: err.toString() });
         });
 }
 
 exports.completeRegistration = (req, res) => {
-    const {vh} = req.params;
+    const { vh } = req.params;
 
     UserRepository.findUserByVerificationHash(vh).then(user => {
         console.log(user)
@@ -131,7 +125,7 @@ exports.completeRegistration = (req, res) => {
             }).then(result => {
                 res.json("Email has been verified");
             }).catch(err => {
-                res.status(400).json({message: err});
+                res.status(400).json({ message: err });
             })
         } else {
             throw Error("User is not exist");
@@ -153,22 +147,22 @@ exports.getUserByVerificationHash = (req, res) => {
         };
         res.json(dto);
     }).catch(err => {
-        res.status(400).json({message: 'User have been registered', error: err.toString()});
+        res.status(400).json({ message: 'User have been registered', error: err.toString() });
     });
 }
 
 
 exports.sendForgetPasswordEmail = (req, res) => {
-    const {email, resetPasswordLinkPrefix} = req.body;
+    const { email, resetPasswordLinkPrefix } = req.body;
     const isUserExisted = UserRepository.checkUserExistByEmail(email);
     if (!isUserExisted) {
-        res.status(400).json({error: "User not found"});
+        res.status(400).json({ error: "User not found" });
     }
 
     const user = UserRepository.findAllUserByEmail(email);
 
     if (user.verification_hash != null) {
-        res.status(400).json({error: "User has registered. Please refer to your email to activate your account."});
+        res.status(400).json({ error: "User has registered. Please refer to your email to activate your account." });
     }
 
     const hashEmail = bcrypt.hashSync(email, 10).replace('/', '.');
@@ -176,36 +170,36 @@ exports.sendForgetPasswordEmail = (req, res) => {
     console.log('received email address : ' + email);
     UserRepository.updateUserVerificationHashByEmail(email, hashEmail).then(async result => {
         const resetPasswordLink = resetPasswordLinkPrefix + '/' + hashEmail;
-        const {subject, text} = buildResetPasswordEmail(resetPasswordLink);
+        const { subject, text } = buildResetPasswordEmail(resetPasswordLink);
         await sendEmail(email, subject, text, res);
-        res.json({message: "Email sent"});
+        res.json({ message: "Email sent" });
     }).catch(err => {
         console.log(err.toString);
-        res.status(500).json({error: "Error occurred. Please try again later"});
+        res.status(500).json({ error: "Error occurred. Please try again later" });
     })
 
 }
 
 exports.resetPassword = async (req, res) => {
-    const {email, verificationHash, newPassword} = req.body;
+    const { email, verificationHash, newPassword } = req.body;
     let isEmailEqual = false;
     try {
         const user = await UserRepository.findUserByVerificationHash(verificationHash);
         isEmailEqual = user.email === email;
     } catch (err) {
         console.log(err.toString());
-        res.status(404).json({error: "User does not exist"});
+        res.status(404).json({ error: "User does not exist" });
     }
     try {
         if (isEmailEqual) {
             const hashPassword = bcrypt.hashSync(newPassword, 10);
             UserRepository.updatePasswordByEmail(email, hashPassword).then(result => {
-                res.json({message: "Password updated successfully"});
+                res.json({ message: "Password updated successfully" });
             })
         } else {
-            res.status(404).json({error: "Unauthorized access"});
+            res.status(404).json({ error: "Unauthorized access" });
         }
     } catch (err) {
-        res.status(500).json({error: "Error occurred. Please try again later."})
+        res.status(500).json({ error: "Error occurred. Please try again later." })
     }
 }

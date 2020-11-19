@@ -30,10 +30,10 @@ module.exports = db.sequelize.define(
         longitude:{
             type: Sequelize.DOUBLE,
         },
-        phone_num:{
+        phoneNum:{
             type: Sequelize.STRING,
         },
-        user_id: {
+        userId: {
             type: Sequelize.INTEGER,
         },
         created: {

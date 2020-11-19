@@ -11,7 +11,7 @@ users.post('/update-profile', UserController.updateUserProfile);
 
 users.post(REGISTER_USER, UserController.registerUser);
 
-users.post(LOGIN, UserController.loginWithRole);
+users.post(LOGIN, UserController.login);
 
 users.get(COMPLETE_REGISTRATION+'/:vh', UserController.completeRegistration);
 

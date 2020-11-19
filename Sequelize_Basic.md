@@ -111,40 +111,19 @@ BookDetail.findAll({
 #### Transaction
 Transaction is used when we want to commit or rollback transaction manually.
 <pre><code>
-const t = await db.sequelize.transaction();
-                        const promises = [];
-                        for (let i = 0; i < usersData.length; i++) {
-                            promises[i] = UserRepository.createUser(usersData[i], {transaction: t});
-                        }
-                        Promise.all(promises).then(users => {
-                            const userRolePromises = [];
-                            for (let i = 0; i < users.length; i++) {
-                                userRolePromises.push(RoleRepository.findRoleById(rows[users[i].email]).then(role => {
-                                    users[i].addRole(role);
-                                    return users[i];
-                                }));
-                            }
-                            return Promise.all(userRolePromises);
-                        }).then(function (users) {
-                            let emailPromises = [];
-
-                            users.forEach(user => {
-                                const email = user.email;
-                                const verification_hash = user.verification_hash;
-                                const registrationLink = registrationLinkPrefix + '/' + verification_hash;
-                                const {subject, text} = buildVerificationEmail(email, registrationLink);
-                                emailPromises.push(sendEmail(email, subject, text, res));
-                            });
-
-                            return Promise.all(emailPromises);
-                        }).then((result) => {
-                            t.commit();
-                            res.send(result);
-                        }).catch(function (err) {
-                            t.rollback();
-                            console.log(err);
-                            // t.rollback();
-                            return res.status(400).json({error: err.toString});
-                            // res.status(400).json({ message: errMessage });
-                        });
+db.sequelize.transaction(t => {
+        if (bookId) {
+            BorrowBookHistoryRepository.deleteBookHistoryByBookId(bookId, {transaction: t});
+        }
+        return BookRepository.deleteBookByBookDetailId(bookDetailId, {transaction: t}).then(books => {
+            return BookDetailRepository.deleteBookDetailById(bookDetailId, {transaction: t}).then(bookDetail => {
+                console.log(bookDetail);
+                if (bookDetail) {
+                    res.json('Book Detail Deleted Successfully')
+                } else {
+                    res.status(400).json({message: 'Book Detail Delete Failed'});
+                }
+            });
+        });
+    })
 </code></pre>
