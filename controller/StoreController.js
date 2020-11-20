@@ -1,8 +1,9 @@
 const StoreRepository = require('./../repository/StoreRepository');
 
 exports.createStore = (req, res) => {
-    const { name, address, postalCode, city, country, latitude, longitude, phoneNum, userId } = req.body;
-    const storeData = { name, address, postalCode, city, country, latitude, longitude, phoneNum, userId };
+    const { name, address, postal_code, city, country, latitude, longitude, phone_num, user_id } = req.body;
+    const storeData = { name, address, postal_code, city, country, latitude, longitude, phone_num, user_id };
+    console.log(storeData);
     StoreRepository.createStore(storeData).then(result => {
         res.json({ msg: "Success", data: "The data created successfully" });
     }).catch(err => {

@@ -15,7 +15,7 @@ module.exports = db.sequelize.define(
         address:{
             type: Sequelize.STRING,
         },
-        postalCode:{
+        postal_code:{
             type: Sequelize.INTEGER,
         },
         city:{
@@ -30,7 +30,7 @@ module.exports = db.sequelize.define(
         longitude:{
             type: Sequelize.DOUBLE,
         },
-        phoneNum:{
+        phone_num:{
             type: Sequelize.STRING,
         },
         userId: {
