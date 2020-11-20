@@ -5,5 +5,5 @@ exports.createStore = (storeData, arguments) => {
 }
 
 exports.getStoreByUserId = (userId) => {
-    return Store.findOne({ userId });
+    return Store.findOne({ where: { userId } });
 }

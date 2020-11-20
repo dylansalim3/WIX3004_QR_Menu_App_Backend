@@ -4,8 +4,10 @@ exports.createStore = (req, res) => {
     const { name, address, postalCode, city, country, latitude, longitude, phoneNum, userId } = req.body;
     const storeData = { name, address, postalCode, city, country, latitude, longitude, phoneNum, userId };
     StoreRepository.createStore(storeData).then(result => {
-        res.send({ msg: "The store is created successfully" });
-    })
+        res.json({ msg: "Success", data: "The data created successfully" });
+    }).catch(err => {
+        res.status(500).json({ msg: "Error creating the store" });
+    });
 }
 
 exports.getStoreByUserId = (req, res) => {
@@ -17,5 +19,7 @@ exports.getStoreByUserId = (req, res) => {
             res.json({ msg: "success", data: result });
         }
 
+    }).catch(err => {
+        res.status({ msg: "Error in retrieving data" });
     })
 }
