@@ -16,6 +16,7 @@ exports.GET_ALL_ROLES = '/get-all-roles';
 //Store
 exports.CREATE_STORE = '/create-store';
 exports.GET_STORE_BY_USER_ID = '/get-store-by-user-id';
+exports.GET_STORE_BY_STORE_ID = '/get-store-by-store-id';
 
 //Item Category
 exports.GET_ITEM_CATEGORY_BY_STORE_ID = '/get-item-category-by-store-id';

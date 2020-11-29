@@ -24,3 +24,16 @@ exports.getStoreByUserId = (req, res) => {
         res.status({ msg: "Error in retrieving data" });
     })
 }
+
+exports.getStoreByPk = (req, res) => {
+    const { storeId } = req.body;
+    StoreRepository.getStoreByPk(storeId).then(result => {
+        if (result == undefined) {
+            res.status(404).json({ msg: "Store not found" });
+        } else {
+            res.json({ msg: "success", data: result });
+        }
+    }).catch(err => {
+        res.status({ msg: "Error in retrieving data" });
+    })
+}

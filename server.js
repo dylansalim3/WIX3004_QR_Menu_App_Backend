@@ -82,7 +82,7 @@ socialAccountType.hasOne(socialAccount, { foreignKey: 'social_account_type_id' }
 store.hasMany(itemCategory, { foreignKey: 'store_id' });
 itemCategory.belongsTo(store, { foreignKey: 'store_id' });
 
-itemCategory.hasMany(item, { foreignKey: 'item_category_id' });
+itemCategory.hasMany(item, { foreignKey: 'item_category_id', onDelete: 'CASCADE' });
 item.belongsTo(itemCategory, { foreignKey: 'item_category_id' });
 
 store.hasMany(promotion, { foreignKey: 'store_id' });

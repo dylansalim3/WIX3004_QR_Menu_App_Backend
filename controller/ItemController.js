@@ -33,8 +33,8 @@ exports.getAllItemByStoreId = (req, res) => {
 }
 
 exports.getItemByPk = (req, res) => {
-  const { userId } = req.body;
-  ItemRepository.getItemByPk(userId).then(result => {
+  const { itemId } = req.body;
+  ItemRepository.getItemByPk(itemId).then(result => {
     res.json({ msg: "success", data: result });
   }).catch(err => {
     res.status(500).json({ msg: "Error in getting user id" });

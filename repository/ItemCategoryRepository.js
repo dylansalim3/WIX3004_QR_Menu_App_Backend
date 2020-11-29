@@ -15,3 +15,6 @@ exports.getCurrentPositionByStoreId = (storeId) => {
 exports.getAllItems = (storeId) => {
     return ItemCategory.findAll({ include: [{ model:Item}], where: { store_id: storeId } });
 }
+
+
+// exports.deleteItemCategory = ()
