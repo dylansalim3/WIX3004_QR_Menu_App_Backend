@@ -2,8 +2,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const UserRepository = require("../repository/UserRepository");
 const RoleRepository = require("../repository/RoleRepository");
+const StoreRepository = require('./../repository/StoreRepository');
 const { buildResetPasswordEmail, buildVerificationEmail, sendEmail } = require('../utils/emailUtils');
-const { MERCHANT } = require('./../constant/constant');
+const { CUSTOMER, MERCHANT } = require('./../constant/constant');
 const { USERS, COMPLETE_REGISTRATION } = require('./../constant/route-constant');
 const { sequelize } = require('sequelize');
 
@@ -65,6 +66,15 @@ exports.registerUser = async (req, res) => {
                                 mydata = JSON.parse(mydata);
                                 const role = await RoleRepository.findRoleById(user.role_id);
                                 mydata['role'] = role.name;
+
+                                if(role.name === MERCHANT){
+                                    const store = await StoreRepository.getStoreByUserId(mydata.id);
+                                    if(store != undefined){
+                                        mydata['store_id'] = store.id;
+                                        mydata['store_name'] = store.name;
+                                    }
+                                }
+
                                 let token = jwt.sign(mydata, process.env.SECRET_KEY);
                                 res.send({ token: token });
                                 return user;
@@ -94,6 +104,15 @@ exports.login = (req, res) => {
                     const role = await RoleRepository.findRoleById(results.role_id);
                     mydata['role'] = role.name;
                     console.log(JSON.stringify(mydata));
+
+                    if(role.name === MERCHANT){
+                        const store = await StoreRepository.getStoreByUserId(mydata.id);
+                        if(store != undefined){
+                            mydata['store_id'] = store.id;
+                            mydata['store_name'] = store.name;
+                        }
+                    }
+
                     let token = jwt.sign(mydata, process.env.SECRET_KEY);
                     console.log("Correct password");
                     res.send({ token: token });

@@ -17,16 +17,24 @@ if (process.env.NODE_ENV !== 'production') {
     dotenv.config();
 }
 
-const { UPLOADS, USERS, ROLES, STORES } = require('./constant/route-constant');
+// Routes
+const { UPLOADS, USERS, ROLES, STORES, ITEM_CATEGORIES, ITEMS } = require('./constant/route-constant');
 const Users = require('./routes/Users');
 const Roles = require('./routes/Roles');
 const Stores = require('./routes/Stores');
+const ItemCategories = require('./routes/ItemCategories');
+const Items = require('./routes/Items');
+
 
 app.use(UPLOADS, express.static('uploads'));
 app.use(USERS, Users);
 app.use(ROLES, Roles);
 app.use(STORES, Stores);
+app.use(ITEM_CATEGORIES, ItemCategories);
+app.use(ITEMS, Items);
 
+
+// Model Associations
 const user = require('./models/User');
 const role = require('./models/Role');
 const report = require('./models/Report');

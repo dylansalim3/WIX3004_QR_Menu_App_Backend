@@ -33,7 +33,7 @@ module.exports = db.sequelize.define(
         phone_num:{
             type: Sequelize.STRING,
         },
-        userId: {
+        user_id: {
             type: Sequelize.INTEGER,
         },
         created: {

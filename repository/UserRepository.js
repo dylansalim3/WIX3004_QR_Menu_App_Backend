@@ -87,10 +87,10 @@ exports.updatePasswordByEmail = (email, password) => {
     });
 }
 
-exports.getStudentsCount = () => {
+exports.getCustomerCount = () => {
     return User.count({include: [{model: Role}], where: {'$role.name': CUSTOMER}});
 }
 
-exports.getTeacherCount = () => {
+exports.getMerchantCount = () => {
     return User.count({include: [{model: Role}], where: {'$role.name$': MERCHANT}});
 }
