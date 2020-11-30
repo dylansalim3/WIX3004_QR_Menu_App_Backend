@@ -21,5 +21,6 @@ users.post('/password-recovery', UserController.sendForgetPasswordEmail);
 
 users.post('/reset-password', UserController.resetPassword);
 
+users.post('/update-fcm', UserController.updateFCM);
 
 module.exports = users;

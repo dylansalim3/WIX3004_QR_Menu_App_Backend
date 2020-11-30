@@ -9,3 +9,9 @@ exports.FACEBOOK = 'FACEBOOK';
 exports.INSTAGRAM = 'INSTAGRAM';
 exports.WHATSAPP = 'WHATSAPP';
 
+// Report Status
+exports.REPORT_STATUS = {
+    PENDING: 'PENDING',
+    ACCEPTED: 'ACCEPTED',
+    REJECTED: 'REJECTED'
+}

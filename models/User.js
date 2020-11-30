@@ -46,6 +46,9 @@ module.exports = db.sequelize.define(
         role_id: {
             type: Sequelize.INTEGER,
         },
+        fcm_token: {
+            type: Sequelize.STRING
+        }
     },
     {
         timestamps: false,
