@@ -4,6 +4,8 @@ exports.ROLES = '/roles';
 exports.STORES = '/stores';
 exports.ITEM_CATEGORIES = '/item-categories';
 exports.ITEMS = '/items';
+exports.FAVORITE = '/favorite';
+
 
 // User
 exports.REGISTER_USER = '/register-user';

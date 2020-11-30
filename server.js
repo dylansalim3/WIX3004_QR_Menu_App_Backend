@@ -18,12 +18,13 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // Routes
-const { UPLOADS, USERS, ROLES, STORES, ITEM_CATEGORIES, ITEMS } = require('./constant/route-constant');
+const { UPLOADS, USERS, ROLES, STORES, ITEM_CATEGORIES, ITEMS,FAVORITE } = require('./constant/route-constant');
 const Users = require('./routes/Users');
 const Roles = require('./routes/Roles');
 const Stores = require('./routes/Stores');
 const ItemCategories = require('./routes/ItemCategories');
 const Items = require('./routes/Items');
+const Favorite = require('./routes/Favorite');
 
 
 app.use(UPLOADS, express.static('uploads'));
@@ -32,6 +33,7 @@ app.use(ROLES, Roles);
 app.use(STORES, Stores);
 app.use(ITEM_CATEGORIES, ItemCategories);
 app.use(ITEMS, Items);
+app.use(FAVORITE, Favorite);
 
 
 // Model Associations
