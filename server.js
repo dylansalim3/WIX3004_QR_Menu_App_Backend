@@ -17,10 +17,14 @@ if (process.env.NODE_ENV !== 'production') {
     dotenv.config();
 }
 
-const { UPLOADS, USERS, ROLES, STORES, REPORTS, NOTIFICATIONS } = require('./constant/route-constant');
+// Routes
+const { UPLOADS, USERS, ROLES, STORES, ITEM_CATEGORIES, ITEMS,FAVORITE, REPORTS, NOTIFICATIONS } = require('./constant/route-constant');
 const Users = require('./routes/Users');
 const Roles = require('./routes/Roles');
 const Stores = require('./routes/Stores');
+const ItemCategories = require('./routes/ItemCategories');
+const Items = require('./routes/Items');
+const Favorite = require('./routes/Favorite');
 const Reports = require('./routes/Reports');
 const Notifications = require('./routes/Notifications');
 
@@ -28,9 +32,14 @@ app.use(UPLOADS, express.static('uploads'));
 app.use(USERS, Users);
 app.use(ROLES, Roles);
 app.use(STORES, Stores);
+app.use(ITEM_CATEGORIES, ItemCategories);
+app.use(ITEMS, Items);
+app.use(FAVORITE, Favorite);
 app.use(REPORTS, Reports);
 app.use(NOTIFICATIONS, Notifications);
 
+
+// Model Associations
 const user = require('./models/User');
 const role = require('./models/Role');
 const report = require('./models/Report');
@@ -78,7 +87,7 @@ socialAccountType.hasOne(socialAccount, { foreignKey: 'social_account_type_id' }
 store.hasMany(itemCategory, { foreignKey: 'store_id' });
 itemCategory.belongsTo(store, { foreignKey: 'store_id' });
 
-itemCategory.hasMany(item, { foreignKey: 'item_category_id' });
+itemCategory.hasMany(item, { foreignKey: 'item_category_id', onDelete: 'CASCADE' });
 item.belongsTo(itemCategory, { foreignKey: 'item_category_id' });
 
 store.hasMany(promotion, { foreignKey: 'store_id' });

@@ -31,11 +31,13 @@ module.exports = db.sequelize.define(
         item_img: {
             type: Sequelize.STRING,
         },
-        quantity: {
-            type: Sequelize.INTEGER,
-        },
         recommended: {
             type: Sequelize.BOOLEAN,
+            defaultValue: false
+        },
+        hidden: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: false
         },
     },
     {
