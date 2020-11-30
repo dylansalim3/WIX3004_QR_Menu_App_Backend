@@ -170,6 +170,21 @@ exports.getUserByVerificationHash = (req, res) => {
     });
 }
 
+exports.updateFCM = (req, res) => {
+    const id = req.body.id;
+    const fcmToken = req.body.fcm_token;
+
+    console.log("fcm updating");
+
+    UserRepository.updateFCM(id, fcmToken)
+        .then(() => {
+            console.log("fcm updated");
+            res.status(200).json({msg: "fcm updated"});
+        }).catch(err => {
+        console.error(err);
+        res.status(500).json({err: err});
+    });
+}
 
 exports.sendForgetPasswordEmail = (req, res) => {
     const { email, resetPasswordLinkPrefix } = req.body;

@@ -2,46 +2,29 @@ const Sequelize = require('sequelize')
 const db = require("../database/db.js")
 
 module.exports = db.sequelize.define(
-    'store',
+    'notification',
     {
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
-        name: {
+        title: {
             type: Sequelize.STRING,
         },
-        address:{
+        body: {
             type: Sequelize.STRING,
         },
-        postal_code:{
-            type: Sequelize.INTEGER,
+        receiver: {
+            type: Sequelize.INTEGER
         },
-        city:{
-            type: Sequelize.STRING,
-        },
-        country:{
-            type: Sequelize.STRING,
-        },
-        latitude:{
-            type: Sequelize.DOUBLE,
-        },
-        longitude:{
-            type: Sequelize.DOUBLE,
-        },
-        phone_num:{
-            type: Sequelize.STRING,
-        },
-        user_id: {
-            type: Sequelize.INTEGER,
+        isRead: {
+          type: Sequelize.BOOLEAN,
+          defaultValue: false
         },
         created: {
             type: Sequelize.DATE,
             defaultValue: Sequelize.NOW
-        },
-        ban_until: {
-            type: Sequelize.DATEONLY,
         }
     },
     {
@@ -49,4 +32,4 @@ module.exports = db.sequelize.define(
         freezeTableName: true,
         underscored: true,
     }
-);
+)

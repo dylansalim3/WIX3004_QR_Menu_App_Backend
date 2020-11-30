@@ -94,3 +94,16 @@ exports.getCustomerCount = () => {
 exports.getMerchantCount = () => {
     return User.count({include: [{model: Role}], where: {'$role.name$': MERCHANT}});
 }
+
+exports.updateFCM = (id, fcmToken) => {
+    return User.findOne({where: {id: id}}).then(user => {
+        user.fcm_token = fcmToken;
+        return user.save();
+    })
+}
+
+exports.getFCM = id => {
+    return User.findOne({where: {id: id}}).then(user => {
+        return user.fcm_token;
+    })
+}
