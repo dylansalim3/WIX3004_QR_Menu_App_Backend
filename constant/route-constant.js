@@ -38,7 +38,7 @@ exports.UPDATE_HIDDEN_STATUS = '/update-hidden-status';
 exports.SUBMIT_REPORT = '/submit-report';
 exports.PROCESS_REPORT = '/process-report';
 
-//Notifiaction
+//Notification
 exports.READ_NOTIFICATION = '/read-notification';
 exports.GET_ALL_NOTIFICATIONS = '/get-all-notifications';
 exports.DELETE_NOTIFICATION = '/delete-notification';

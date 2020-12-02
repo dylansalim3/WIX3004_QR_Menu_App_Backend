@@ -19,6 +19,10 @@ exports.newNotification = async (receivers, title, body) => {
         .catch(console.error);
 }
 
+/**
+ * @param {number} req.params.id
+ * @returns {Promise<void>}
+ */
 exports.getAllNotifications = async (req, res) => {
     const {id} = req.params;
     try {
@@ -30,6 +34,10 @@ exports.getAllNotifications = async (req, res) => {
     }
 }
 
+/**
+ * @param {number} req.body.id
+ * @returns {Promise<void>}
+ */
 exports.readNotification = async (req, res) => {
     const id = req.body.id;
     try {
@@ -41,6 +49,10 @@ exports.readNotification = async (req, res) => {
     }
 }
 
+/**
+ * @param {number} req.body.id
+ * @returns {Promise<void>}
+ */
 exports.deleteNotification = async (req, res) => {
     const id = req.body.id;
     try {
@@ -52,10 +64,14 @@ exports.deleteNotification = async (req, res) => {
     }
 }
 
+/**
+ * @param {number} req.body.user_id
+ * @returns {Promise<void>}
+ */
 exports.deleteAllNotifications = async (req, res) => {
-    const id = req.body.id;
+    const user_id = req.body.user_id;
     try {
-        await Repo.deleteAllNotifications(id);
+        await Repo.deleteAllNotifications(user_id);
         res.status(200).json({msg: "All notifications deleted"})
     } catch (e) {
         console.error(e);

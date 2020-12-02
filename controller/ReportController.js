@@ -1,6 +1,14 @@
 const Repo = require('../repository/ReportRepository');
 const {banStore} = require('../repository/StoreRepository');
 
+/**
+ * @param {string} req.body.title
+ * @param {string} req.body.desc
+ * @param {string} req.body.email
+ * @param {number} req.body.store_id
+ * @param {number} req.body.user_id
+ * @returns {Promise<void>}
+ */
 exports.submitReport = async (req, res) => {
     try {
         await Repo.newReport({
@@ -17,6 +25,12 @@ exports.submitReport = async (req, res) => {
     }
 }
 
+/**
+ * @param {number} req.body.id
+ * @param {number} req.body.store_id
+ * @param {string} req.body.type
+ * @returns {Promise<void>}
+ */
 exports.processReport = async (req, res) => {
     const reportId = req.body.id;
     const storeId = req.body.store_id;

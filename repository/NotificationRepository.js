@@ -42,8 +42,8 @@ exports.deleteNotification = id => {
 
 /**
  * Delete all notifications for a user
- * @param {number} id Receiver uid
+ * @param {number} user_id Receiver user id
  */
-exports.deleteAllNotifications = id => {
-    return Notification.destroy({where: {receiver: id}})
+exports.deleteAllNotifications = user_id => {
+    return Notification.destroy({where: {receiver: user_id}})
 }
