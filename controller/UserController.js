@@ -84,7 +84,8 @@ exports.registerUser = async (req, res) => {
                     throw Error("User already exists");
                 }
             }).catch((err) => {
-                res.status(500).send(err.toString());
+                console.log(err.toString());
+                res.status(500).send("Registration failed");
             });
     } else {
         res.status(404).json('error: Role is invalid');

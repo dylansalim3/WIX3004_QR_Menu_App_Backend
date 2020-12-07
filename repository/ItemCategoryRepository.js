@@ -13,8 +13,10 @@ exports.getCurrentPositionByStoreId = (storeId) => {
 }
 
 exports.getAllItems = (storeId) => {
-    return ItemCategory.findAll({ include: [{ model:Item}], where: { store_id: storeId } });
+    return ItemCategory.findAll({ include: [{ model: Item }], where: { store_id: storeId } });
 }
 
 
-// exports.deleteItemCategory = ()
+exports.deleteItemCategory = (itemCategoryId) => {
+    return ItemCategory.destroy({ where: { id: itemCategoryId } });
+}
