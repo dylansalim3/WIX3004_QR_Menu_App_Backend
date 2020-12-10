@@ -26,6 +26,7 @@ exports.GET_STORE_BY_STORE_ID = '/get-store-by-store-id';
 exports.GET_ITEM_CATEGORY_BY_STORE_ID = '/get-item-category-by-store-id';
 exports.GET_LAST_POSITION_BY_STORE_ID = '/get-last-position-by-store-id';
 exports.CREATE_ITEM_CATEGORY = '/create-item-category';
+exports.DELETE_ITEM_CATEGORY = '/delete-item-category';
 
 //Item
 exports.CREATE_ITEM = '/create-item';
@@ -33,6 +34,7 @@ exports.GET_ALL_ITEMS_BY_STORE_ID = '/get-all-items-by-store-id';
 exports.GET_ITEM_BY_ID = '/get-item-by-id';
 exports.UPDATE_RECOMMENDED_STATUS = '/update-recommendation-status';
 exports.UPDATE_HIDDEN_STATUS = '/update-hidden-status';
+exports.DELETE_ITEM = '/delete-item';
 
 //Report
 exports.SUBMIT_REPORT = '/submit-report';
@@ -43,3 +45,4 @@ exports.READ_NOTIFICATION = '/read-notification';
 exports.GET_ALL_NOTIFICATIONS = '/get-all-notifications';
 exports.DELETE_NOTIFICATION = '/delete-notification';
 exports.DELETE_ALL_NOTIFICATIONS = 'delete-all-notifications';
+exports.UPDATE_ITEM = '/update-item';

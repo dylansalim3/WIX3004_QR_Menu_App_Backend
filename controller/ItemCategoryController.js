@@ -23,3 +23,12 @@ exports.getCurrentPositionByStoreId = (req, res) => {
         res.status(500).json({ msg: "Error in getting position" });
     })
 }
+
+exports.deleteItemCategory = (req, res) => {
+    const { item_category_id } = req.body;
+    ItemCategoryRepository.deleteItemCategory(item_category_id).then(result => {
+        res.json({ msg: "Item Category deleted" });
+    }).catch(err=>{
+        res.status(500).json({ msg: "Error in deleting item category" });
+    })
+}
