@@ -18,7 +18,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // Routes
-const { UPLOADS, USERS, ROLES, STORES, ITEM_CATEGORIES, ITEMS,FAVORITE, REPORTS, NOTIFICATIONS } = require('./constant/route-constant');
+const { UPLOADS, USERS, ROLES, STORES, ITEM_CATEGORIES, ITEMS, FAVORITE, REPORTS, NOTIFICATIONS, RATINGS } = require('./constant/route-constant');
 const Users = require('./routes/Users');
 const Roles = require('./routes/Roles');
 const Stores = require('./routes/Stores');
@@ -27,6 +27,7 @@ const Items = require('./routes/Items');
 const Favorite = require('./routes/Favorite');
 const Reports = require('./routes/Reports');
 const Notifications = require('./routes/Notifications');
+const Ratings = require('./routes/Ratings');
 
 app.use(UPLOADS, express.static('uploads'));
 app.use(USERS, Users);
@@ -37,6 +38,7 @@ app.use(ITEMS, Items);
 app.use(FAVORITE, Favorite);
 app.use(REPORTS, Reports);
 app.use(NOTIFICATIONS, Notifications);
+app.use(RATINGS, Ratings);
 
 
 // Model Associations
@@ -52,6 +54,7 @@ const socialAccountType = require('./models/SocialAccountType');
 const itemCategory = require('./models/ItemCategory');
 const item = require('./models/Item');
 const promotion = require('./models/Promotion');
+const rating = require('./models/Rating');
 const db = require('./database/db');
 
 user.belongsTo(role, { foreignKey: 'role_id' });
@@ -95,6 +98,12 @@ promotion.belongsTo(store, { foreignKey: 'store_id' });
 
 item.hasOne(promotion, { foreignKey: 'item_id' });
 promotion.belongsTo(item, { foreignKey: 'item_id' });
+
+store.hasMany(rating, { foreignKey: 'store_id' });
+rating.belongsTo(store, { foreignKey: 'store_id' });
+
+user.hasMany(rating, { foreignKey: "user_id" });
+rating.belongsTo(user, { foreignKey: "user_id" });
 
 const RoleRepository = require('./repository/RoleRepository');
 const SocialAccountTypeRepository = require('./repository/SocialAccountTypeRepository');

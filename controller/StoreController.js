@@ -1,4 +1,6 @@
 const StoreRepository = require('./../repository/StoreRepository');
+const path = require('path');
+var Qrcode = require('qrcode');
 
 exports.createStore = (req, res) => {
     const { name, address, postal_code, city, country, latitude, longitude, phone_num, user_id } = req.body;
@@ -35,5 +37,25 @@ exports.getStoreByPk = (req, res) => {
         }
     }).catch(err => {
         res.status({ msg: "Error in retrieving data" });
+    })
+}
+
+exports.getGeneratedQrCode = (req, res) => {
+    const { storeId } = req.body;
+    StoreRepository.getStoreByPk(storeId).then((result) => {
+        if (result == undefined) {
+            res.json({ msg: "There is no storeID" });
+        } else {
+            const dataString = `
+            {
+                "storeId":${storeId}
+            }
+            `
+            Qrcode.toDataURL(dataString, { errorCorrectionLevel: 'H' }, function (err, url) {
+                res.json({msg:"success", data: url });
+            });
+        }
+    }).catch(err => {
+        res.json({ msg: err.toString() });
     })
 }
