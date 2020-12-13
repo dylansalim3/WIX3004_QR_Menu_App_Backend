@@ -3,8 +3,8 @@ const path = require('path');
 var Qrcode = require('qrcode');
 
 exports.createStore = (req, res) => {
-    const { name, address, postal_code, city, country, latitude, longitude, phone_num, user_id } = req.body;
-    const storeData = { name, address, postal_code, city, country, latitude, longitude, phone_num, user_id };
+    const { name, address, postal_code, city, country, latitude, longitude, phone_num, user_id, open_hour, closing_hour, special_opening_note } = req.body;
+    const storeData = { name, address, postal_code, city, country, latitude, longitude, phone_num, user_id, open_hour, closing_hour, special_opening_note };
     console.log(storeData);
     StoreRepository.createStore(storeData).then(result => {
         res.json({ msg: "Success", data: "The data created successfully" });
@@ -52,7 +52,7 @@ exports.getGeneratedQrCode = (req, res) => {
             }
             `
             Qrcode.toDataURL(dataString, { errorCorrectionLevel: 'H' }, function (err, url) {
-                res.json({msg:"success", data: url });
+                res.json({ msg: "success", data: url });
             });
         }
     }).catch(err => {

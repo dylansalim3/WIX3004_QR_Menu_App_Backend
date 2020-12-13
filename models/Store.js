@@ -12,25 +12,25 @@ module.exports = db.sequelize.define(
         name: {
             type: Sequelize.STRING,
         },
-        address:{
+        address: {
             type: Sequelize.STRING,
         },
-        postal_code:{
+        postal_code: {
             type: Sequelize.INTEGER,
         },
-        city:{
+        city: {
             type: Sequelize.STRING,
         },
-        country:{
+        country: {
             type: Sequelize.STRING,
         },
-        latitude:{
+        latitude: {
             type: Sequelize.DOUBLE,
         },
-        longitude:{
+        longitude: {
             type: Sequelize.DOUBLE,
         },
-        phone_num:{
+        phone_num: {
             type: Sequelize.STRING,
         },
         user_id: {
@@ -42,6 +42,15 @@ module.exports = db.sequelize.define(
         },
         ban_until: {
             type: Sequelize.DATEONLY,
+        },
+        open_hour: {
+            type: Sequelize.TIME,
+        },
+        closing_hour: {
+            type: Sequelize.TIME,
+        },
+        special_opening_note: {
+            type: Sequelize.STRING,
         }
     },
     {
