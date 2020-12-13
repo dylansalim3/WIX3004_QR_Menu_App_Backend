@@ -59,3 +59,15 @@ exports.getGeneratedQrCode = (req, res) => {
         res.json({ msg: err.toString() });
     })
 }
+
+exports.updateStore = (req, res) => {
+    const { id, name, address, postal_code, city, country, latitude, longitude, phone_num, user_id, open_hour, closing_hour, special_opening_note } = req.body;
+    const storeData = { name, address, postal_code, city, country, latitude, longitude, phone_num, user_id, open_hour, closing_hour, special_opening_note };
+    
+    StoreRepository.updateStore(storeData, id).then(result => {
+        res.json({ msg: "The data created successfully", data: result });
+    }).catch(err => {
+        console.log(err.toString());
+        res.status(500).json({ msg: "Error creating the store" });
+    });
+}
