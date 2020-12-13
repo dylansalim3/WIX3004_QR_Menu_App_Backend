@@ -53,3 +53,4 @@ exports.UPDATE_ITEM = '/update-item';
 //rating
 exports.CREATE_RATING = '/create-rating';
 exports.GET_ALL_RATING_BY_STORE_ID = '/get-all-rating-by-store-id';
+exports.GET_AVERAGE_RATING_BY_STORE_ID = '/get-average-rating-by-store-id';
