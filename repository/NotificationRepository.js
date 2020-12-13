@@ -5,7 +5,7 @@ const Notification = require('../models/Notification');
  * @param {Object} data
  * @param {string} data.title
  * @param {string} data.body
- * @param {number} data.receiver
+ * @param {number} data.user_id
  */
 exports.newNotification = data => {
     return Notification.create(data);
@@ -17,7 +17,10 @@ exports.newNotification = data => {
  * @returns {Promise<Notification[]>}
  */
 exports.getAllNotification = id => {
-    return Notification.findAll({where: {receiver: id}})
+    return Notification.findAll({
+        where: {user_id: id},
+        order: [['created', 'DESC']]
+    })
 }
 
 /**

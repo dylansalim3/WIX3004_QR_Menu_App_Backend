@@ -1,4 +1,5 @@
 const Repo = require('../repository/ReportRepository');
+const {newNotification} = require("../repository/NotificationRepository");
 const {banStore} = require('../repository/StoreRepository');
 
 /**
@@ -17,6 +18,11 @@ exports.submitReport = async (req, res) => {
             email: req.body.email,
             store_id: req.body.store_id,
             user_id: req.body.user_id
+        });
+        await newNotification({
+            title: req.body.title,
+            body: "Report submitted",
+            receiver: req.body.user_id
         });
         res.status(200).json({msg: "report submitted"});
     } catch (err) {
