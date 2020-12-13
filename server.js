@@ -45,6 +45,7 @@ app.use(RATINGS, Ratings);
 const user = require('./models/User');
 const role = require('./models/Role');
 const report = require('./models/Report');
+const notification = require('./models/Notification');
 const favoriteMerchant = require('./models/FavoriteMerchant');
 const recentlyViewedMerchant = require('./models/RecentlyViewedMerchant');
 const store = require('./models/Store');
@@ -62,6 +63,9 @@ role.hasOne(user, { foreignKey: 'role_id' });
 
 user.hasMany(report, { foreignKey: 'user_id' });
 report.belongsTo(user, { foreignKey: 'user_id' });
+
+user.hasMany(notification, { foreignKey: 'user_id'});
+notification.belongsTo(user, { foreignKey: 'user_id'});
 
 user.hasMany(favoriteMerchant, { as: 'customer', foreignKey: 'user_id' });
 favoriteMerchant.belongsTo(user, { as: 'customer', foreignKey: 'user_id' });

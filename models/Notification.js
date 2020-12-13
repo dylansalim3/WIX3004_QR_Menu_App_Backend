@@ -15,14 +15,23 @@ module.exports = db.sequelize.define(
         body: {
             type: Sequelize.STRING,
         },
-        receiver: {
-            type: Sequelize.INTEGER
+        activity: {
+            type: Sequelize.STRING,
         },
-        isRead: {
-          type: Sequelize.BOOLEAN,
-          defaultValue: false
+        data: {
+            type: Sequelize.INTEGER,
+        },
+        user_id: {
+            allowNull: false,
+            type: Sequelize.INTEGER,
+        },
+        is_read: {
+            allowNull: false,
+            type: Sequelize.BOOLEAN,
+            defaultValue: false
         },
         created: {
+            allowNull: false,
             type: Sequelize.DATE,
             defaultValue: Sequelize.NOW
         }
