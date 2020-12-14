@@ -12,6 +12,7 @@ const {banStore} = require('../repository/StoreRepository');
  */
 exports.submitReport = async (req, res) => {
     try {
+        console.warn(req.body.user_id);
         await Repo.newReport({
             title: req.body.title,
             desc: req.body.desc,
@@ -20,9 +21,9 @@ exports.submitReport = async (req, res) => {
             user_id: req.body.user_id
         });
         await newNotification({
-            title: req.body.title,
-            body: "Report submitted",
-            receiver: req.body.user_id
+            title: "Report: " + req.body.title,
+            body: "We have received your report and will reviewed it shortly",
+            user_id: req.body.user_id
         });
         res.status(200).json({msg: "report submitted"});
     } catch (err) {

@@ -35,13 +35,13 @@ exports.getAllNotifications = async (req, res) => {
 }
 
 /**
- * @param {number[]} req.body.id Notification id
+ * @param {number} req.body.id Notification id
  * @returns {Promise<void>}
  */
 exports.readNotification = async (req, res) => {
-    const ids = req.body.id;
+    const id = req.body.id;
     try {
-        await Promise.all(ids.map(id => Repo.readNotification(id)));
+        await Repo.readNotification(id);
         res.status(200).json({msg: "Notification read"})
     } catch (e) {
         console.error(e);
@@ -77,4 +77,15 @@ exports.deleteAllNotifications = async (req, res) => {
         console.error(e);
         res.status(500).json({err: e})
     }
+}
+
+/**
+ * A welcome notification for new user
+ * @param {number} userId
+ * @returns {Promise<void>}
+ */
+exports.newUserNotification = async (userId) => {
+    const title = "Thanks for signing up at QRMenuApp"
+    const body = "You can add your frequently visited stores as favourite"
+    return newNotification([userId], title, body);
 }

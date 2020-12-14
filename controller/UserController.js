@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const UserRepository = require("../repository/UserRepository");
 const RoleRepository = require("../repository/RoleRepository");
 const StoreRepository = require('./../repository/StoreRepository');
+const {newUserNotification} = require("../repository/NotificationRepository");
 const { buildResetPasswordEmail, buildVerificationEmail, sendEmail } = require('../utils/emailUtils');
 const { CUSTOMER, MERCHANT } = require('./../constant/constant');
 const { USERS, COMPLETE_REGISTRATION } = require('./../constant/route-constant');
@@ -74,6 +75,8 @@ exports.registerUser = async (req, res) => {
                                         mydata['store_name'] = store.name;
                                     }
                                 }
+
+                                await newUserNotification(mydata.id).catch(console.error);
 
                                 let token = jwt.sign(mydata, process.env.SECRET_KEY);
                                 res.send({ token: token });

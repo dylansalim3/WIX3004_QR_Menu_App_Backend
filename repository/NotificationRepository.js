@@ -30,7 +30,7 @@ exports.getAllNotification = id => {
 exports.readNotification = id => {
     return Notification.findOne({where: {id: id}})
         .then(notification => {
-            notification.isRead = true;
+            notification.is_read = true;
             return notification.save();
         })
 }
