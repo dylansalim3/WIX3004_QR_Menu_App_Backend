@@ -4,8 +4,27 @@ var Qrcode = require('qrcode');
 
 exports.createStore = (req, res) => {
     const { name, address, postal_code, city, country, latitude, longitude, phone_num, user_id, open_hour, closing_hour, special_opening_note } = req.body;
-    const storeData = { name, address, postal_code, city, country, latitude, longitude, phone_num, user_id, open_hour, closing_hour, special_opening_note };
-    console.log(storeData);
+    const file = req.file;
+    let filePath = null;
+    if (file !== undefined) {
+        filePath = file.path.replace(/\\/g, "/");
+    }
+    const storeData = { 
+        name, 
+        address, 
+        postal_code, 
+        city, 
+        country, 
+        latitude, 
+        longitude, 
+        phone_num, 
+        user_id, 
+        open_hour, 
+        closing_hour, 
+        special_opening_note, 
+        profile_img: filePath };
+
+
     StoreRepository.createStore(storeData).then(result => {
         res.json({ msg: "Success", data: "The data created successfully" });
     }).catch(err => {
@@ -62,8 +81,27 @@ exports.getGeneratedQrCode = (req, res) => {
 
 exports.updateStore = (req, res) => {
     const { id, name, address, postal_code, city, country, latitude, longitude, phone_num, user_id, open_hour, closing_hour, special_opening_note } = req.body;
-    const storeData = { name, address, postal_code, city, country, latitude, longitude, phone_num, user_id, open_hour, closing_hour, special_opening_note };
-    
+    const file = req.file;
+    let filePath = null;
+    if (file !== undefined) {
+        filePath = file.path.replace(/\\/g, "/");
+    }
+    const storeData = {
+        name,
+        address,
+        postal_code,
+        city,
+        country,
+        latitude,
+        longitude,
+        phone_num,
+        user_id,
+        open_hour,
+        closing_hour,
+        special_opening_note,
+        profile_img: filePath
+    };
+
     StoreRepository.updateStore(storeData, id).then(result => {
         res.json({ msg: "The data created successfully", data: result });
     }).catch(err => {

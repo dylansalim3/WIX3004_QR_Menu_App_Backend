@@ -51,6 +51,9 @@ module.exports = db.sequelize.define(
         },
         special_opening_note: {
             type: Sequelize.STRING,
+        },
+        profile_img: {
+            type: Sequelize.STRING,
         }
     },
     {

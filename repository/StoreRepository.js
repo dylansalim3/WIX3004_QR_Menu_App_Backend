@@ -1,5 +1,6 @@
 const Store = require('./../models/Store');
 const dayjs = require('dayjs');
+const fs = require('fs');
 
 exports.createStore = (storeData, arguments) => {
     return Store.create(storeData, arguments);
@@ -23,6 +24,13 @@ exports.banStore = (storeId) => {
 
 exports.updateStore = (storeData, pk) => {
     return Store.findByPk(pk).then(store => {
+        try {
+            fs.unlinkSync(store.profile_img);
+        } catch (err) {
+
+        }
+        store.profile_img = storeData.profile_img;
+
         store.name = storeData.name;
         store.address = storeData.address;
         store.postal_code = storeData.postal_code;

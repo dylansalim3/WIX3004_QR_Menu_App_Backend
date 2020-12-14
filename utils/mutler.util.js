@@ -9,6 +9,15 @@ const storeItemImageStorage = multer.diskStorage({
     }
 })
 
+const storeStoreProfileImageStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/store-profile-images/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + file.originalname.replace(' ', '-'));
+    }
+})
+
 const imageFileFilter = (req, file, cb) => {
     if (file.mimetype === 'image/*') {
         cb(null, true);
@@ -25,6 +34,14 @@ exports.uploadStoreItemImage = multer({
     },
     fileFilter: imageFileFilter
 });
+
+exports.uploadStoreProfileImage = multer({
+    storage: storeStoreProfileImageStorage,
+    limits: {
+        fileSize: 1024 * 1024 * 10
+    },
+    fileFilter: imageFileFilter
+})
 
 const SQLStorage = multer.diskStorage({
     destination: function (req, file, cb) {
