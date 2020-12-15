@@ -24,8 +24,9 @@ exports.updateUserProfile = (req, res) => {
     const userId = req.body.userid;
 
     UserRepository.updateUserProfile(firstName, lastName, profileImg, address, phoneNum, userId)
-        .then((result) => {
-            res.send({ result: result });
+        .then(async (user) => {
+            const token = await signToken(user);
+            res.send({ token: token });
         });
 }
 
@@ -94,7 +95,6 @@ exports.registerUser = async (req, res) => {
         res.status(404).json('error: Role is invalid');
     }
 }
-
 
 exports.login = (req, res) => {
     UserRepository.findUserByEmail(req.body.email)
@@ -240,4 +240,42 @@ exports.resetPassword = async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: "Error occurred. Please try again later." })
     }
+}
+
+exports.updateRole = async (req, res) => {
+    const userId = req.body.user_id;
+    const role = req.body.role;
+
+    if (!role || !userId) {
+        console.error("Role or user id is empty");
+        res.status(400).json({err: "Role or user id is empty"});
+        return;
+    }
+
+    try {
+        const allRoles = await RoleRepository.findAllRole();
+        const roleId = allRoles.find(r => r.dataValues.name === role).id;
+        const user = await UserRepository.updateUserRole(userId, roleId);
+        const token = await signToken(user);
+        res.send({token: token});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({err: err});
+    }
+}
+
+const signToken = async (user) => {
+    const mydata = JSON.parse(JSON.stringify(user));
+    const role = await RoleRepository.findRoleById(user.role_id);
+
+    mydata['role'] = role.name;
+
+    if (role.name === MERCHANT) {
+        const store = await StoreRepository.getStoreByUserId(mydata.id);
+        if (store && store.id) {
+            mydata['store_id'] = store.id;
+            mydata['store_name'] = store.name;
+        }
+    }
+    return jwt.sign(mydata, process.env.SECRET_KEY);
 }

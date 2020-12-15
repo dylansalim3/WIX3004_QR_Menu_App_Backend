@@ -23,4 +23,6 @@ users.post('/reset-password', UserController.resetPassword);
 
 users.post('/update-fcm', UserController.updateFCM);
 
+users.post('/update-role', UserController.updateRole);
+
 module.exports = users;
