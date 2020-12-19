@@ -1,4 +1,5 @@
 const multer = require('multer');
+const path = require("path");
 
 const storeItemImageStorage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -24,6 +25,28 @@ exports.uploadStoreItemImage = multer({
         fileSize: 1024 * 1024 * 10
     },
     fileFilter: imageFileFilter
+});
+
+const profilePictureStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/profile-picture/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + "_" + file.originalname.replace(' ', '-'));
+    }
+})
+
+exports.uploadProfilePicture = multer({
+    storage: profilePictureStorage,
+    limits: {fileSize: 1024 * 1024 * 10},
+    fileFilter: (req, file, callback) => {
+        const extension = path.extname(file.originalname);
+        if (file.mimetype !== 'image/jpeg' || extension !== '.jpeg') {
+            req.multer_error = "only jpeg is allowed";
+            return callback(new Error());
+        }
+        callback(null, true);
+    }
 });
 
 const SQLStorage = multer.diskStorage({
