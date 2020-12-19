@@ -7,7 +7,7 @@ const Notification = require('../models/Notification');
  * @param {string} data.body
  * @param {number} data.user_id
  */
-exports.newNotification = data => {
+exports.createNotification = data => {
     return Notification.create(data);
 }
 

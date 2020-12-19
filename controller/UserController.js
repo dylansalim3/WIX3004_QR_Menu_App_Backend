@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const UserRepository = require("../repository/UserRepository");
 const RoleRepository = require("../repository/RoleRepository");
 const StoreRepository = require('./../repository/StoreRepository');
+const MulterError = require("multer/lib/multer-error");
 const {newUserNotification} = require("../repository/NotificationRepository");
 const { buildResetPasswordEmail, buildVerificationEmail, sendEmail } = require('../utils/emailUtils');
 const { CUSTOMER, MERCHANT } = require('./../constant/constant');
@@ -18,15 +19,14 @@ exports.getUserById = (req, res) => {
 exports.updateUserProfile = (req, res) => {
     const firstName = req.body.first_name;
     const lastName = req.body.last_name;
-    const profileImg = req.body.profileimg;
     const address = req.body.address;
     const phoneNum = req.body.phonenum;
     const userId = req.body.userid;
 
-    UserRepository.updateUserProfile(firstName, lastName, profileImg, address, phoneNum, userId)
+    UserRepository.updateUserProfile(firstName, lastName, address, phoneNum, userId)
         .then(async (user) => {
             const token = await signToken(user);
-            res.send({ token: token });
+            res.send({token: token});
         });
 }
 
@@ -262,6 +262,62 @@ exports.updateRole = async (req, res) => {
         console.error(err);
         res.status(500).json({err: err});
     }
+}
+
+exports.getPictureUrl = async (req, res) => {
+    const userId = req.body.user_id;
+
+    if (!userId) {
+        res.status(400).json({err: "user id is missing"});
+        return;
+    }
+
+    try {
+        const user = await UserRepository.findUserById(userId);
+        const url = user.dataValues.profile_img;
+        res.json({url: url});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({err: err});
+    }
+
+}
+
+exports.updatePicture = async (req, res) => {
+    const file = req.file;
+    const userId = req.body.user_id;
+
+    if (!file) {
+        res.status(500).json({err: "file not found"});
+        return;
+    }
+    if (!userId) {
+        res.status(400).json({err: "user id is missing"});
+        return;
+    }
+
+    try {
+        await UserRepository.updatePicture(userId, file.path);
+        res.json({msg: "picture updated"});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({err: err});
+    }
+}
+
+exports.updatePictureError = async (err, req, res, next) => {
+    if (err instanceof MulterError) {
+        console.error(err);
+        res.status(400).json({err: err.code});
+        return;
+    }
+    if (req.multer_error) {
+        console.error(req.multer_error);
+        res.status(400).json({err: req.multer_error});
+        return;
+    }
+    console.error(err);
+    res.status(500).json({err: err});
 }
 
 const signToken = async (user) => {

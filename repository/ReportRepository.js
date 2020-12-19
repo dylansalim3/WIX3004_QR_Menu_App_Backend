@@ -21,7 +21,7 @@ exports.newReport = (data) => {
 exports.acceptReport = (id) => {
     return Report.findOne({where: {id: id}})
         .then(report => {
-            if (report.processed_date) {
+            if (!report || report.processed_date) {
                 return "processed";
             }
             report.status = REPORT_STATUS.ACCEPTED;
@@ -43,4 +43,9 @@ exports.rejectReport = (id) => {
             report.processed_date = Sequelize.fn('now');
             return report.save();
         })
+}
+
+exports.getReportUserId = async (reportId) => {
+    return Report.findOne({where: {id: reportId}})
+        .then(report => report.user_id)
 }

@@ -11,18 +11,23 @@ module.exports = db.sequelize.define(
             autoIncrement: true
         },
         title: {
+            allowNull: false,
             type: Sequelize.STRING,
         },
         desc: {
+            allowNull: false,
             type: Sequelize.STRING,
         },
         user_id: {
+            allowNull: false,
             type: Sequelize.INTEGER,
         },
         store_id: {
+            allowNull: false,
             type: Sequelize.STRING
         },
         email: {
+            allowNull: false,
             type: Sequelize.STRING,
         },
         status: {

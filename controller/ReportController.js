@@ -1,5 +1,7 @@
 const Repo = require('../repository/ReportRepository');
-const {newNotification} = require("../repository/NotificationRepository");
+const {getReportUserId} = require("../repository/ReportRepository");
+const {getStoreByPk} = require("../repository/StoreRepository");
+const {newNotification} = require("../controller/NotificationController");
 const {banStore} = require('../repository/StoreRepository');
 
 /**
@@ -20,11 +22,11 @@ exports.submitReport = async (req, res) => {
             store_id: req.body.store_id,
             user_id: req.body.user_id
         });
-        await newNotification({
-            title: "Report: " + req.body.title,
-            body: "We have received your report and will reviewed it shortly",
-            user_id: req.body.user_id
-        });
+        await newNotification(
+            [req.body.user_id],
+            "Report: " + req.body.title,
+            "We have received your report and will reviewed it shortly"
+        );
         res.status(200).json({msg: "report submitted"});
     } catch (err) {
         console.error(err);
@@ -53,8 +55,10 @@ exports.processReport = async (req, res) => {
             let prom = await Repo.acceptReport(reportId);
             if (prom === 'processed') {
                 res.status(400).json({err: "report already processed"});
+                return;
             }
             await banStore(storeId);
+            await reportNotification("accepted", await getReportUserId(reportId));
             res.status(200).json({msg: "report accepted"});
             return;
         }
@@ -63,7 +67,9 @@ exports.processReport = async (req, res) => {
             let prom = await Repo.rejectReport(reportId);
             if (prom === 'processed') {
                 res.status(400).json({msg: "report already processed"});
+                return;
             }
+            await reportNotification("rejected", await getReportUserId(reportId));
             res.status(200).json({err: "report rejected"});
             return;
         }
@@ -74,5 +80,15 @@ exports.processReport = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({err: err});
+    }
+
+    async function reportNotification(type, userId) {
+        const store = await getStoreByPk(storeId)
+            .catch(console.error);
+        return newNotification(
+            [userId],
+            "Report: " + store.dataValues.name,
+            "Your report is " + type
+        ).catch(console.error);
     }
 }

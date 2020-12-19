@@ -27,11 +27,13 @@ async function getAccessToken() {
  * @param {Object} notification
  * @param {string} notification.body
  * @param {string} notification.title
+ * @param {string} notification.activity
+ * @param {int} notification.data
  * @returns {Promise}
  */
 async function sendFcmNotification(fcmTokens, notification) {
     const googleToken = await getAccessToken()
-    const {body, title} = notification
+    const {body, title, activity, data} = notification
     const requests = fcmTokens.map(fcmToken => {
         fetch('https://fcm.googleapis.com/v1/projects/qrmenuapp-b28d7/messages:send', {
             'method': 'POST',
@@ -43,7 +45,9 @@ async function sendFcmNotification(fcmTokens, notification) {
                     "token": fcmToken,
                     "data": {
                         "body": body,
-                        "title": title
+                        "title": title,
+                        "activity": activity,
+                        "data": data
                     },
                     "android": {
                         "priority": "HIGH"

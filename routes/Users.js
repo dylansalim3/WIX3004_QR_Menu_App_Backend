@@ -25,4 +25,9 @@ users.post('/update-fcm', UserController.updateFCM);
 
 users.post('/update-role', UserController.updateRole);
 
+users.post('/update-picture', Mutler.uploadProfilePicture.single('img'), UserController.updatePicture);
+users.use('/update-picture', UserController.updatePictureError);
+
+users.post('/get-picture', UserController.getPictureUrl);
+
 module.exports = users;

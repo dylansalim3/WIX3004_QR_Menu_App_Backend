@@ -29,7 +29,7 @@ exports.createUser = (userData, arguments) => {
     return User.create(userData, arguments);
 }
 
-exports.updateUserProfile = async (firstName, lastName, profileImg, address, phoneNum, userid) => {
+exports.updateUserProfile = async (firstName, lastName, address, phoneNum, userid) => {
     await db.sequelize
         .query(
             `UPDATE user SET first_name = ${JSON.stringify(firstName)}
@@ -42,6 +42,11 @@ exports.updateUserProfile = async (firstName, lastName, profileImg, address, pho
     return User.findOne({where: {id: userid}});
 }
 
+exports.updatePicture = async (userId, imagePath) => {
+    const user = await User.findOne({where: {id: userId}});
+    user.profile_img = imagePath;
+    return user.save();
+}
 
 exports.findUserByEmailAndRole = (email, role) => {
     return db.sequelize

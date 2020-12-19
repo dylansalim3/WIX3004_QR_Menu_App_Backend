@@ -6,16 +6,18 @@ const {sendFcmNotification} = require('../utils/notification.util');
  * @param {number[]} receivers
  * @param {string} title
  * @param {string} body
+ * @param {string} activity
+ * @param {int} data
  * @returns {Promise<void>}
  */
-exports.newNotification = async (receivers, title, body) => {
+exports.newNotification = async (receivers, title, body, activity, data) => {
     const promises = receivers.map(async (receiver) => {
-        await Repo.newNotification({title, body, user_id: receiver});
+        await Repo.createNotification({title, body, user_id: receiver});
         return UserRepo.getFCM(receiver);
     })
     const fcmTokens = await Promise.all(promises)
         .catch(console.error);
-    return sendFcmNotification(fcmTokens, {body, title})
+    return sendFcmNotification(fcmTokens, {body, title, activity, data})
         .catch(console.error);
 }
 
@@ -87,5 +89,5 @@ exports.deleteAllNotifications = async (req, res) => {
 exports.newUserNotification = async (userId) => {
     const title = "Thanks for signing up at QRMenuApp"
     const body = "You can add your frequently visited stores as favourite"
-    return newNotification([userId], title, body);
+    return createNotification([userId], title, body);
 }
