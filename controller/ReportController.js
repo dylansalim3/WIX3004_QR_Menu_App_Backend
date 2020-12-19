@@ -9,7 +9,6 @@ const {banStore} = require('../repository/StoreRepository');
  * @param {string} req.body.desc
  * @param {string} req.body.email
  * @param {number} req.body.store_id
- * @param {number} req.body.user_id
  * @returns {Promise<void>}
  */
 exports.submitReport = async (req, res) => {
@@ -20,10 +19,10 @@ exports.submitReport = async (req, res) => {
             desc: req.body.desc,
             email: req.body.email,
             store_id: req.body.store_id,
-            user_id: req.body.user_id
+            user_id: req.token.id
         });
         await newNotification(
-            [req.body.user_id],
+            [req.token.id],
             "Report: " + req.body.title,
             "We have received your report and will reviewed it shortly"
         );

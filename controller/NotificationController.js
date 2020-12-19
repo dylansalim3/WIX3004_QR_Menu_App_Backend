@@ -22,13 +22,12 @@ exports.newNotification = async (receivers, title, body, activity, data) => {
 }
 
 /**
- * @param {number} req.body.user_id
  * @returns {Promise<void>}
  */
 exports.getAllNotifications = async (req, res) => {
-    const {user_id} = req.body;
+    const userId = req.token.id;
     try {
-        const notifications = await Repo.getAllNotification(user_id);
+        const notifications = await Repo.getAllNotification(userId);
         res.status(200).json(notifications);
     } catch (e) {
         console.error(e);
@@ -44,10 +43,10 @@ exports.readNotification = async (req, res) => {
     const id = req.body.id;
     try {
         await Repo.readNotification(id);
-        res.status(200).json({msg: "Notification read"})
+        res.status(200).json({msg: "Notification read"});
     } catch (e) {
         console.error(e);
-        res.status(500).json({err: e})
+        res.status(500).json({err: e});
     }
 }
 
@@ -67,13 +66,12 @@ exports.deleteNotification = async (req, res) => {
 }
 
 /**
- * @param {number} req.body.user_id
  * @returns {Promise<void>}
  */
 exports.deleteAllNotifications = async (req, res) => {
-    const user_id = req.body.user_id;
+    const userId = req.token.id;
     try {
-        await Repo.deleteAllNotifications(user_id);
+        await Repo.deleteAllNotifications(userId);
         res.status(200).json({msg: "All notifications deleted"})
     } catch (e) {
         console.error(e);

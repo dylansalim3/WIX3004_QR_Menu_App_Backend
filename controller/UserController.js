@@ -21,7 +21,7 @@ exports.updateUserProfile = (req, res) => {
     const lastName = req.body.last_name;
     const address = req.body.address;
     const phoneNum = req.body.phonenum;
-    const userId = req.body.userid;
+    const userId = req.token.id;
 
     UserRepository.updateUserProfile(firstName, lastName, address, phoneNum, userId)
         .then(async (user) => {
@@ -243,7 +243,7 @@ exports.resetPassword = async (req, res) => {
 }
 
 exports.updateRole = async (req, res) => {
-    const userId = req.body.user_id;
+    const userId = req.token.id;
     const role = req.body.role;
 
     if (!role || !userId) {
@@ -285,7 +285,7 @@ exports.getPictureUrl = async (req, res) => {
 
 exports.updatePicture = async (req, res) => {
     const file = req.file;
-    const userId = req.body.user_id;
+    const userId = req.token.id;
 
     if (!file) {
         res.status(500).json({err: "file not found"});

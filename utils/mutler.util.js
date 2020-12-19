@@ -29,7 +29,7 @@ exports.uploadStoreItemImage = multer({
 
 const profilePictureStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './uploads/profile-picture/')
+        cb(null, './uploads/profile_picture/')
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + "_" + file.originalname.replace(' ', '-'));
