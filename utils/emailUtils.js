@@ -1,4 +1,8 @@
 const nodemailer = require('nodemailer');
+const fs = require('fs');
+const Handlebars = require('handlebars');
+const path = require("path");
+const {REPORT_RECEIVER} = require("../constant/constant");
 const env = process.env;
 const {google} = require('googleapis');
 
@@ -83,9 +87,24 @@ const buildResetPasswordEmail = (resetPasswordLink) => {
     return {subject: subject, text: text};
 }
 
+/**
+ * @param {string} data.username
+ * @param {string} data.title
+ * @param {string} data.reason
+ * @param {string} data.acceptLink
+ * @returns
+ */
+const sendReportEmail = (data) => {
+    const html = fs.readFileSync(path.join(__dirname, '/email/report.html'));
+    const template = Handlebars.compile(html.toString());
+    const subject = "[Mobilized QR Menu] Report";
+    const text = template(data);
+    return sendEmail(REPORT_RECEIVER,subject, text);
+}
+
 function validateEmail(email) {
     const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
 }
 
-module.exports = {buildResetPasswordEmail, buildVerificationEmail, sendEmail, validateEmail};
+module.exports = {buildResetPasswordEmail, buildVerificationEmail, sendEmail, sendReportEmail, validateEmail};
