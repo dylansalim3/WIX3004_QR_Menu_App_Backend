@@ -26,8 +26,12 @@ exports.updateUserProfile = (req, res) => {
     UserRepository.updateUserProfile(firstName, lastName, address, phoneNum, userId)
         .then(async (user) => {
             const token = await signToken(user);
-            res.send({token: token});
-        });
+            res.json({token: token});
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({err: err});
+        })
 }
 
 exports.registerUser = async (req, res) => {
@@ -178,16 +182,12 @@ exports.updateFCM = (req, res) => {
     const id = req.body.id;
     const fcmToken = req.body.fcm_token;
 
-    console.log("fcm updating");
-
     UserRepository.updateFCM(id, fcmToken)
-        .then(() => {
-            console.log("fcm updated");
-            res.status(200).json({msg: "fcm updated"});
-        }).catch(err => {
-        console.error(err);
-        res.status(500).json({err: err});
-    });
+        .then(() => res.status(200).json({msg: "fcm updated"}))
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({err: err});
+        });
 }
 
 exports.sendForgetPasswordEmail = (req, res) => {
@@ -268,8 +268,7 @@ exports.getPictureUrl = async (req, res) => {
     const userId = req.body.user_id;
 
     if (!userId) {
-        res.status(400).json({err: "user id is missing"});
-        return;
+        return res.status(400).json({err: "user id is missing"});
     }
 
     try {
@@ -288,12 +287,10 @@ exports.updatePicture = async (req, res) => {
     const userId = req.token.id;
 
     if (!file) {
-        res.status(500).json({err: "file not found"});
-        return;
+        return res.status(500).json({err: "file not found"});
     }
     if (!userId) {
-        res.status(400).json({err: "user id is missing"});
-        return;
+        return res.status(400).json({err: "user id is missing"});
     }
 
     try {
@@ -308,13 +305,11 @@ exports.updatePicture = async (req, res) => {
 exports.updatePictureError = async (err, req, res, next) => {
     if (err instanceof MulterError) {
         console.error(err);
-        res.status(400).json({err: err.code});
-        return;
+        return res.status(400).json({err: err.code});
     }
     if (req.multer_error) {
         console.error(req.multer_error);
-        res.status(400).json({err: req.multer_error});
-        return;
+        return res.status(400).json({err: req.multer_error});
     }
     console.error(err);
     res.status(500).json({err: err});

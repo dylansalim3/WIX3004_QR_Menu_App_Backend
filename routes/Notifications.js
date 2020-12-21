@@ -6,7 +6,6 @@ const {verifyToken} = require("../utils/verify.util");
 
 notifications.post(GET_ALL_NOTIFICATIONS, verifyToken, controller.getAllNotifications);
 notifications.post(READ_NOTIFICATION, verifyToken, controller.readNotification);
-notifications.post(DELETE_NOTIFICATION, verifyToken, controller.deleteNotification);
 notifications.post(DELETE_ALL_NOTIFICATIONS, verifyToken, controller.deleteAllNotifications);
 
 module.exports = notifications;

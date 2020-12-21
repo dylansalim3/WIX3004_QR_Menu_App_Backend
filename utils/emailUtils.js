@@ -95,11 +95,11 @@ const buildResetPasswordEmail = (resetPasswordLink) => {
  * @returns
  */
 const sendReportEmail = (data) => {
-    const html = fs.readFileSync(path.join(__dirname, '/email/report.html'));
-    const template = Handlebars.compile(html.toString());
+    const template = fs.readFileSync(path.join(__dirname, '/template/report.html'));
+    const handlebar = Handlebars.compile(template.toString());
     const subject = "[Mobilized QR Menu] Report";
-    const text = template(data);
-    return sendEmail(REPORT_RECEIVER,subject, text);
+    const html = handlebar(data);
+    return sendEmail(REPORT_RECEIVER, subject, html);
 }
 
 function validateEmail(email) {
