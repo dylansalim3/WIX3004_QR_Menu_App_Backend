@@ -21,6 +21,26 @@ const sequelize = new Sequelize(tableName, userName, password, {
         idle: 10000,
         evict: 10000,
         handleDisconnects: true,
+    },
+    retry: {
+        match: [
+            /ETIMEDOUT/,
+            /EHOSTUNREACH/,
+            /ECONNRESET/,
+            /ECONNREFUSED/,
+            /ETIMEDOUT/,
+            /ESOCKETTIMEDOUT/,
+            /EHOSTUNREACH/,
+            /EPIPE/,
+            /EAI_AGAIN/,
+            /SequelizeConnectionError/,
+            /SequelizeConnectionRefusedError/,
+            /SequelizeHostNotFoundError/,
+            /SequelizeHostNotReachableError/,
+            /SequelizeInvalidConnectionError/,
+            /SequelizeConnectionTimedOutError/
+        ],
+        max: 5
     }
 })
 

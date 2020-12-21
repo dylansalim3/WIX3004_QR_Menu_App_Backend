@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = express();
-const port = 5000;
 
 app.use(bodyParser.json());
 app.use(cors({
@@ -66,8 +65,8 @@ role.hasOne(user, { foreignKey: 'role_id' });
 user.hasMany(report, { foreignKey: 'user_id' });
 report.belongsTo(user, { foreignKey: 'user_id' });
 
-user.hasMany(notification, { foreignKey: 'user_id'});
-notification.belongsTo(user, { foreignKey: 'user_id'});
+user.hasMany(notification, { foreignKey: 'user_id' });
+notification.belongsTo(user, { foreignKey: 'user_id' });
 
 user.hasMany(favoriteMerchant, { as: 'customer', foreignKey: 'user_id' });
 favoriteMerchant.belongsTo(user, { as: 'customer', foreignKey: 'user_id' });
@@ -137,8 +136,8 @@ db.sequelize.sync({ logging: false })
         })
     });
 
-const server = app.listen(port, () => {
-    console.log("Server is running on part: " + port)
+const server = app.listen(process.env.PORT || 5000, () => {
+    console.log("Server is running on part: " + process.env.PORT || 5000)
 });
 
 const { startSocketServer } = require('./utils/socket.util');
