@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const UserRepository = require("../repository/UserRepository");
 const RoleRepository = require("../repository/RoleRepository");
 const StoreRepository = require('./../repository/StoreRepository');
+const MulterError = require("multer/lib/multer-error");
+const {newUserNotification} = require("../repository/NotificationRepository");
 const { buildResetPasswordEmail, buildVerificationEmail, sendEmail } = require('../utils/emailUtils');
 const { CUSTOMER, MERCHANT } = require('./../constant/constant');
 const { USERS, COMPLETE_REGISTRATION } = require('./../constant/route-constant');
@@ -17,15 +19,19 @@ exports.getUserById = (req, res) => {
 exports.updateUserProfile = (req, res) => {
     const firstName = req.body.first_name;
     const lastName = req.body.last_name;
-    const profileImg = req.body.profileimg;
     const address = req.body.address;
     const phoneNum = req.body.phonenum;
-    const userId = req.body.userid;
+    const userId = req.token.id;
 
-    UserRepository.updateUserProfile(firstName, lastName, profileImg, address, phoneNum, userId)
-        .then((result) => {
-            res.send({ result: result });
-        });
+    UserRepository.updateUserProfile(firstName, lastName, address, phoneNum, userId)
+        .then(async (user) => {
+            const token = await signToken(user);
+            res.json({token: token});
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({err: err});
+        })
 }
 
 exports.registerUser = async (req, res) => {
@@ -75,6 +81,8 @@ exports.registerUser = async (req, res) => {
                                     }
                                 }
 
+                                await newUserNotification(mydata.id).catch(console.error);
+
                                 let token = jwt.sign(mydata, process.env.SECRET_KEY);
                                 res.send({ token: token });
                                 return user;
@@ -91,7 +99,6 @@ exports.registerUser = async (req, res) => {
         res.status(404).json('error: Role is invalid');
     }
 }
-
 
 exports.login = (req, res) => {
     UserRepository.findUserByEmail(req.body.email)
@@ -175,16 +182,12 @@ exports.updateFCM = (req, res) => {
     const id = req.body.id;
     const fcmToken = req.body.fcm_token;
 
-    console.log("fcm updating");
-
     UserRepository.updateFCM(id, fcmToken)
-        .then(() => {
-            console.log("fcm updated");
-            res.status(200).json({msg: "fcm updated"});
-        }).catch(err => {
-        console.error(err);
-        res.status(500).json({err: err});
-    });
+        .then(() => res.status(200).json({msg: "fcm updated"}))
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({err: err});
+        });
 }
 
 exports.sendForgetPasswordEmail = (req, res) => {
@@ -237,4 +240,93 @@ exports.resetPassword = async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: "Error occurred. Please try again later." })
     }
+}
+
+exports.updateRole = async (req, res) => {
+    const userId = req.token.id;
+    const role = req.body.role;
+
+    if (!role || !userId) {
+        console.error("Role or user id is empty");
+        res.status(400).json({err: "Role or user id is empty"});
+        return;
+    }
+
+    try {
+        const allRoles = await RoleRepository.findAllRole();
+        const roleId = allRoles.find(r => r.dataValues.name === role).id;
+        const user = await UserRepository.updateUserRole(userId, roleId);
+        const token = await signToken(user);
+        res.send({token: token});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({err: err});
+    }
+}
+
+exports.getPictureUrl = async (req, res) => {
+    const userId = req.body.user_id;
+
+    if (!userId) {
+        return res.status(400).json({err: "user id is missing"});
+    }
+
+    try {
+        const user = await UserRepository.findUserById(userId);
+        const url = user.dataValues.profile_img;
+        res.json({url: url});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({err: err});
+    }
+
+}
+
+exports.updatePicture = async (req, res) => {
+    const file = req.file;
+    const userId = req.token.id;
+
+    if (!file) {
+        return res.status(500).json({err: "file not found"});
+    }
+    if (!userId) {
+        return res.status(400).json({err: "user id is missing"});
+    }
+
+    try {
+        await UserRepository.updatePicture(userId, file.path);
+        res.json({msg: "picture updated"});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({err: err});
+    }
+}
+
+exports.updatePictureError = async (err, req, res, next) => {
+    if (err instanceof MulterError) {
+        console.error(err);
+        return res.status(400).json({err: err.code});
+    }
+    if (req.multer_error) {
+        console.error(req.multer_error);
+        return res.status(400).json({err: req.multer_error});
+    }
+    console.error(err);
+    res.status(500).json({err: err});
+}
+
+const signToken = async (user) => {
+    const mydata = JSON.parse(JSON.stringify(user));
+    const role = await RoleRepository.findRoleById(user.role_id);
+
+    mydata['role'] = role.name;
+
+    if (role.name === MERCHANT) {
+        const store = await StoreRepository.getStoreByUserId(mydata.id);
+        if (store && store.id) {
+            mydata['store_id'] = store.id;
+            mydata['store_name'] = store.name;
+        }
+    }
+    return jwt.sign(mydata, process.env.SECRET_KEY);
 }

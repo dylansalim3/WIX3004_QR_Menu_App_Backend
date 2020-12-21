@@ -7,7 +7,7 @@ const Notification = require('../models/Notification');
  * @param {string} data.body
  * @param {number} data.user_id
  */
-exports.newNotification = data => {
+exports.createNotification = data => {
     return Notification.create(data);
 }
 
@@ -30,17 +30,9 @@ exports.getAllNotification = id => {
 exports.readNotification = id => {
     return Notification.findOne({where: {id: id}})
         .then(notification => {
-            notification.isRead = true;
+            notification.is_read = true;
             return notification.save();
         })
-}
-
-/**
- * Delete notification by id
- * @param {number} id Notification id
- */
-exports.deleteNotification = id => {
-    return Notification.destroy({where: {id: id}})
 }
 
 /**

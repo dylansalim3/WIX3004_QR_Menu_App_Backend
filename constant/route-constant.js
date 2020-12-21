@@ -14,6 +14,11 @@ exports.RATINGS = '/rating';
 exports.REGISTER_USER = '/register-user';
 exports.LOGIN = '/login';
 exports.COMPLETE_REGISTRATION = '/complete-registration';
+exports.UPDATE_PROFILE = '/update-profile';
+exports.UPDATE_FCM = '/update-fcm';
+exports.UPDATE_ROLE = '/update-role';
+exports.UPDATE_PICTURE = '/update-picture';
+exports.GET_PICTURE = '/get-picture';
 
 // Role
 exports.GET_ALL_ROLES = '/get-all-roles';
@@ -38,6 +43,7 @@ exports.GET_ITEM_BY_ID = '/get-item-by-id';
 exports.UPDATE_RECOMMENDED_STATUS = '/update-recommendation-status';
 exports.UPDATE_HIDDEN_STATUS = '/update-hidden-status';
 exports.DELETE_ITEM = '/delete-item';
+exports.UPDATE_ITEM = '/update-item';
 
 //Report
 exports.SUBMIT_REPORT = '/submit-report';
@@ -46,9 +52,7 @@ exports.PROCESS_REPORT = '/process-report';
 //Notification
 exports.READ_NOTIFICATION = '/read-notification';
 exports.GET_ALL_NOTIFICATIONS = '/get-all-notifications';
-exports.DELETE_NOTIFICATION = '/delete-notification';
 exports.DELETE_ALL_NOTIFICATIONS = 'delete-all-notifications';
-exports.UPDATE_ITEM = '/update-item';
 
 //rating
 exports.CREATE_RATING = '/create-rating';

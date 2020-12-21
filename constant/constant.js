@@ -9,9 +9,10 @@ exports.FACEBOOK = 'FACEBOOK';
 exports.INSTAGRAM = 'INSTAGRAM';
 exports.WHATSAPP = 'WHATSAPP';
 
-// Report Status
+// Report
+exports.REPORT_RECEIVER = 'fangwainam7@gmail.com'
 exports.REPORT_STATUS = {
     PENDING: 'PENDING',
-    ACCEPTED: 'ACCEPTED',
-    REJECTED: 'REJECTED'
+    ACCEPTED: 'ACCEPTED'
 }
+

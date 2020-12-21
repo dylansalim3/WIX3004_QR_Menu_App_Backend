@@ -29,19 +29,24 @@ exports.createUser = (userData, arguments) => {
     return User.create(userData, arguments);
 }
 
-exports.updateUserProfile = (firstName, lastName, profileImg, address, phoneNum, userid) => {
-    return db.sequelize
+exports.updateUserProfile = async (firstName, lastName, address, phoneNum, userid) => {
+    await db.sequelize
         .query(
-            `UPDATE users SET first_name = ${JSON.stringify(firstName)}
+            `UPDATE user SET first_name = ${JSON.stringify(firstName)}
           ,last_name = ${JSON.stringify(lastName)}
-          ,profileimg = ${JSON.stringify(profileImg)}
           ,address = ${JSON.stringify(address)}
-          ,phonenum = ${JSON.stringify(phoneNum)}
-          WHERE users.id =${JSON.stringify(userid)}
+          ,phone_num = ${JSON.stringify(phoneNum)}
+          WHERE user.id =${JSON.stringify(userid)}
           `
         );
+    return User.findOne({where: {id: userid}});
 }
 
+exports.updatePicture = async (userId, imagePath) => {
+    const user = await User.findOne({where: {id: userId}});
+    user.profile_img = imagePath;
+    return user.save();
+}
 
 exports.findUserByEmailAndRole = (email, role) => {
     return db.sequelize
@@ -93,6 +98,13 @@ exports.getCustomerCount = () => {
 
 exports.getMerchantCount = () => {
     return User.count({include: [{model: Role}], where: {'$role.name$': MERCHANT}});
+}
+
+exports.updateUserRole = async (userId, roleId) => {
+    const user = await User.findOne({where: {id: userId}});
+    user.role_id = roleId;
+    await user.save();
+    return user;
 }
 
 exports.updateFCM = (id, fcmToken) => {

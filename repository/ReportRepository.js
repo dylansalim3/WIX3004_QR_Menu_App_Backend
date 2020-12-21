@@ -1,6 +1,6 @@
 const Report = require('../models/Report');
 const {REPORT_STATUS} = require('../constant/constant');
-const {Sequelize} = require('../database/db');
+const {sequelize} = require('../database/db');
 
 /**
  * @param {Object} data
@@ -21,26 +21,16 @@ exports.newReport = (data) => {
 exports.acceptReport = (id) => {
     return Report.findOne({where: {id: id}})
         .then(report => {
-            if (report.processed_date) {
+            if (!report || report.processedDate) {
                 return "processed";
             }
             report.status = REPORT_STATUS.ACCEPTED;
-            report.processed_date = Sequelize.fn('now');
+            report.processedDate = sequelize.literal("CURRENT_TIMESTAMP");
             return report.save();
         })
 }
 
-/**
- * @param {number} id
- */
-exports.rejectReport = (id) => {
-    return Report.findOne({where: {id: id}})
-        .then(report => {
-            if (report.processed_date) {
-                return "processed";
-            }
-            report.status = REPORT_STATUS.REJECTED;
-            report.processed_date = Sequelize.fn('now');
-            return report.save();
-        })
+exports.getReportUserId = async (reportId) => {
+    return Report.findOne({where: {id: reportId}})
+        .then(report => report.user_id)
 }
