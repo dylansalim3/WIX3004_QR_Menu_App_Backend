@@ -4,7 +4,7 @@ const UserRepository = require("../repository/UserRepository");
 const RoleRepository = require("../repository/RoleRepository");
 const StoreRepository = require('./../repository/StoreRepository');
 const MulterError = require("multer/lib/multer-error");
-const {newUserNotification} = require("../repository/NotificationRepository");
+const { newUserNotification } = require("../controller/NotificationController");
 const { buildResetPasswordEmail, buildVerificationEmail, sendEmail } = require('../utils/emailUtils');
 const { CUSTOMER, MERCHANT } = require('./../constant/constant');
 const { USERS, COMPLETE_REGISTRATION } = require('./../constant/route-constant');
@@ -26,11 +26,11 @@ exports.updateUserProfile = (req, res) => {
     UserRepository.updateUserProfile(firstName, lastName, address, phoneNum, userId)
         .then(async (user) => {
             const token = await signToken(user);
-            res.json({token: token});
+            res.json({ token: token });
         })
         .catch(err => {
             console.error(err);
-            res.status(500).json({err: err});
+            res.status(500).json({ err: err });
         })
 }
 
@@ -73,18 +73,18 @@ exports.registerUser = async (req, res) => {
                                 const role = await RoleRepository.findRoleById(user.role_id);
                                 mydata['role'] = role.name;
 
-                                if(role.name === MERCHANT){
+                                if (role.name === MERCHANT) {
                                     const store = await StoreRepository.getStoreByUserId(mydata.id);
-                                    if(store != undefined){
+                                    if (store != undefined) {
                                         mydata['store_id'] = store.id;
                                         mydata['store_name'] = store.name;
                                     }
                                 }
 
-                                await new UserNotification(mydata.id).catch(console.error);
+                                await newUserNotification(mydata.id).catch(console.error);
 
                                 let token = jwt.sign(mydata, process.env.SECRET_KEY);
-                                res.send({ token: token });
+                                res.send({ msg: "success", data: {token} });
                                 return user;
                             });
                     });
@@ -113,9 +113,9 @@ exports.login = (req, res) => {
                     mydata['role'] = role.name;
                     console.log(JSON.stringify(mydata));
 
-                    if(role.name === MERCHANT){
+                    if (role.name === MERCHANT) {
                         const store = await StoreRepository.getStoreByUserId(mydata.id);
-                        if(store != undefined){
+                        if (store != undefined) {
                             mydata['store_id'] = store.id;
                             mydata['store_name'] = store.name;
                         }
@@ -123,19 +123,19 @@ exports.login = (req, res) => {
 
                     let token = jwt.sign(mydata, process.env.SECRET_KEY);
                     console.log("Correct password");
-                    res.send({ token: token });
+                    res.send({ msg: "success", data: {token} });
 
                 } else {
                     console.log('Wrong password');
-                    res.status(400).json({ error: 'Wrong password' });
+                    res.status(400).json({ msg: 'Wrong password' });
                 }
             } else {
                 console.log('user does not exist');
-                res.status(404).json({ error: "User does not exist" })
+                res.status(404).json({ msg: "User does not exist" })
             }
         })
         .catch((err) => {
-            res.status(400).json({ error: err.toString() });
+            res.status(400).json({ msg: err.toString() });
         });
 }
 
@@ -150,9 +150,9 @@ exports.completeRegistration = (req, res) => {
                 user.verification_hash = '';
                 return user.save();
             }).then(result => {
-                res.json("Email has been verified");
+                res.json({ msg: "Email has been verified" });
             }).catch(err => {
-                res.status(400).json({ message: err });
+                res.status(400).json({ msg: err });
             })
         } else {
             throw Error("User is not exist");
@@ -174,7 +174,7 @@ exports.getUserByVerificationHash = (req, res) => {
         };
         res.json(dto);
     }).catch(err => {
-        res.status(400).json({ message: 'User have been registered', error: err.toString() });
+        res.status(400).json({ msg: 'User have been registered', error: err.toString() });
     });
 }
 
@@ -183,10 +183,10 @@ exports.updateFCM = (req, res) => {
     const fcmToken = req.body.fcm_token;
 
     UserRepository.updateFCM(id, fcmToken)
-        .then(() => res.status(200).json({msg: "fcm updated"}))
+        .then(() => res.status(200).json({ msg: "fcm updated" }))
         .catch(err => {
             console.error(err);
-            res.status(500).json({err: err});
+            res.status(500).json({ err: err });
         });
 }
 
@@ -248,7 +248,7 @@ exports.updateRole = async (req, res) => {
 
     if (!role || !userId) {
         console.error("Role or user id is empty");
-        res.status(400).json({err: "Role or user id is empty"});
+        res.status(400).json({ err: "Role or user id is empty" });
         return;
     }
 
@@ -257,10 +257,10 @@ exports.updateRole = async (req, res) => {
         const roleId = allRoles.find(r => r.dataValues.name === role).id;
         const user = await UserRepository.updateUserRole(userId, roleId);
         const token = await signToken(user);
-        res.send({token: token});
+        res.send({ token: token });
     } catch (err) {
         console.error(err);
-        res.status(500).json({err: err});
+        res.status(500).json({ err: err });
     }
 }
 
@@ -268,16 +268,16 @@ exports.getPictureUrl = async (req, res) => {
     const userId = req.body.user_id;
 
     if (!userId) {
-        return res.status(400).json({err: "user id is missing"});
+        return res.status(400).json({ err: "user id is missing" });
     }
 
     try {
         const user = await UserRepository.findUserById(userId);
         const url = user.dataValues.profile_img;
-        res.json({url: url});
+        res.json({ url: url });
     } catch (err) {
         console.error(err);
-        res.status(500).json({err: err});
+        res.status(500).json({ err: err });
     }
 
 }
@@ -287,32 +287,32 @@ exports.updatePicture = async (req, res) => {
     const userId = req.token.id;
 
     if (!file) {
-        return res.status(500).json({err: "file not found"});
+        return res.status(500).json({ err: "file not found" });
     }
     if (!userId) {
-        return res.status(400).json({err: "user id is missing"});
+        return res.status(400).json({ err: "user id is missing" });
     }
 
     try {
         await UserRepository.updatePicture(userId, file.path);
-        res.json({msg: "picture updated"});
+        res.json({ msg: "picture updated" });
     } catch (err) {
         console.error(err);
-        res.status(500).json({err: err});
+        res.status(500).json({ err: err });
     }
 }
 
 exports.updatePictureError = async (err, req, res, next) => {
     if (err instanceof MulterError) {
         console.error(err);
-        return res.status(400).json({err: err.code});
+        return res.status(400).json({ err: err.code });
     }
     if (req.multer_error) {
         console.error(req.multer_error);
-        return res.status(400).json({err: req.multer_error});
+        return res.status(400).json({ err: req.multer_error });
     }
     console.error(err);
-    res.status(500).json({err: err});
+    res.status(500).json({ err: err });
 }
 
 const signToken = async (user) => {

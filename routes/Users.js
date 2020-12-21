@@ -27,6 +27,7 @@ users.post(UPDATE_FCM, UserController.updateFCM); //TODO: add verify token
 users.post(UPDATE_ROLE, verifyToken, UserController.updateRole);
 
 users.post(UPDATE_PICTURE, verifyToken, Mutler.uploadProfilePicture.single('img'), UserController.updatePicture);
+
 users.use(UPDATE_PICTURE, UserController.updatePictureError);
 
 users.post(GET_PICTURE, UserController.getPictureUrl);
