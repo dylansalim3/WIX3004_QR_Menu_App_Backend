@@ -8,9 +8,9 @@ const host = process.env.db_host;
 const port = process.env.db_port;
 const dbDialect = process.env.db_dialect;
 
-const sequelize = new Sequelize(tableName,userName,password,{
+const sequelize = new Sequelize(tableName, userName, password, {
     host: host,
-    port:port,
+    port: port,
     dialect: dbDialect,
     operatorsAliases: false,
 
@@ -18,7 +18,9 @@ const sequelize = new Sequelize(tableName,userName,password,{
         max: 5,
         min: 0,
         acquire: 30000,
-        idle: 10000
+        idle: 10000,
+        evict: 10000,
+        handleDisconnects: true,
     }
 })
 

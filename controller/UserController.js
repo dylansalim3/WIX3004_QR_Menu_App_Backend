@@ -81,7 +81,7 @@ exports.registerUser = async (req, res) => {
                                     }
                                 }
 
-                                await newUserNotification(mydata.id).catch(console.error);
+                                await new UserNotification(mydata.id).catch(console.error);
 
                                 let token = jwt.sign(mydata, process.env.SECRET_KEY);
                                 res.send({ token: token });

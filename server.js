@@ -17,6 +17,8 @@ if (process.env.NODE_ENV !== 'production') {
     dotenv.config();
 }
 
+console.log(process.env.db_host);
+
 // Routes
 const { UPLOADS, USERS, ROLES, STORES, ITEM_CATEGORIES, ITEMS, FAVORITE, REPORTS, NOTIFICATIONS, RATINGS } = require('./constant/route-constant');
 const Users = require('./routes/Users');
