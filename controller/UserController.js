@@ -64,9 +64,11 @@ exports.registerUser = async (req, res) => {
                                 user.role_id = selectedRole.id;
                                 user.verification_hash = verification_hash;
                                 user.save();
-                                const registrationLink = 'http://' + req.headers.host + USERS + COMPLETE_REGISTRATION + '/' + verification_hash;
-                                const { subject, text } = buildVerificationEmail(userData.email, registrationLink);
-                                await sendEmail(userData.email, subject, text, res);
+
+                                // Send email function - Currently not using it
+                                // const registrationLink = 'http://' + req.headers.host + USERS + COMPLETE_REGISTRATION + '/' + verification_hash;
+                                // const { subject, text } = buildVerificationEmail(userData.email, registrationLink);
+                                // await sendEmail(userData.email, subject, text, res);
 
                                 let mydata = JSON.stringify(user);
                                 mydata = JSON.parse(mydata);
