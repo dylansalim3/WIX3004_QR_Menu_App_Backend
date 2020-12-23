@@ -1,4 +1,8 @@
 const StoreRepository = require('./../repository/StoreRepository');
+const UserRepository = require('./../repository/UserRepository');
+const RoleRepository = require('./../repository/RoleRepository');
+const { MERCHANT } = require('./../constant/constant');
+const jwt = require('jsonwebtoken');
 const path = require('path');
 var Qrcode = require('qrcode');
 
@@ -26,11 +30,33 @@ exports.createStore = (req, res) => {
 
 
     StoreRepository.createStore(storeData).then(result => {
-        res.json({ msg: "Success", data: "The data created successfully" });
+        return UserRepository.findUserById(user_id)
+        .then(async (user) => {
+            const token = await signToken(user);
+            res.json({ msg: "Success", data: {token} });
+        })
     }).catch(err => {
+        console.log(err.toString());
         res.status(500).json({ msg: "Error creating the store" });
     });
 }
+
+const signToken = async (user) => {
+    const mydata = JSON.parse(JSON.stringify(user));
+    const role = await RoleRepository.findRoleById(user.role_id);
+
+    mydata['role'] = role.name;
+
+    if (role.name === MERCHANT) {
+        const store = await StoreRepository.getStoreByUserId(mydata.id);
+        if (store && store.id) {
+            mydata['store_id'] = store.id;
+            mydata['store_name'] = store.name;
+        }
+    }
+    return jwt.sign(mydata, process.env.SECRET_KEY);
+}
+
 
 exports.getStoreByUserId = (req, res) => {
     const { userId } = req.body;
