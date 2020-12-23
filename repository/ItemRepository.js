@@ -25,7 +25,7 @@ exports.updateItem = (itemData, pk) => {
             item.item_img = itemData.item_img;
 
         }
-
+        item.currency = itemData.currency;
         item.name = itemData.name;
         item.desc = itemData.desc;
         item.price = itemData.price;

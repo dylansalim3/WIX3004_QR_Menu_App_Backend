@@ -39,6 +39,9 @@ module.exports = db.sequelize.define(
             type: Sequelize.BOOLEAN,
             defaultValue: false
         },
+        currency: {
+            type: Sequelize.STRING,
+        }
     },
     {
         timestamps: false,

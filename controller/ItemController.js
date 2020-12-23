@@ -4,7 +4,7 @@ const UrlUtil = require('./../utils/url.util');
 
 exports.createItem = (req, res) => {
   const file = req.file;
-  const { item_category_id, name, desc, price, promo_price, hidden, recommended } = req.body;
+  const { item_category_id, name, desc, price, promo_price, hidden, recommended,currency } = req.body;
   console.log("req body");
   console.log(req.body);
   console.log(req.body.name);
@@ -22,6 +22,7 @@ exports.createItem = (req, res) => {
     hidden,
     recommended,
     item_img: filePath,
+    currency,
   };
 
   ItemRepository.createItem(itemData).then(result => {
@@ -34,7 +35,7 @@ exports.createItem = (req, res) => {
 
 exports.updateItem = (req, res) => {
   const file = req.file;
-  const { id, name, desc, price, promo_price, hidden, recommended } = req.body;
+  const { id, name, desc, price, promo_price, hidden, recommended,currency } = req.body;
   let filePath = null;
   if (file !== undefined) {
     filePath = file.path.replace(/\\/g, "/");
@@ -48,6 +49,7 @@ exports.updateItem = (req, res) => {
     hidden,
     recommended,
     item_img: filePath,
+    currency,
   };
 
   ItemRepository.updateItem(itemData, id).then(result => {
