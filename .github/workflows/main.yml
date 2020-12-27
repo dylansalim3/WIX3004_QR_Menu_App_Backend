@@ -21,6 +21,7 @@ jobs:
     - uses: actions/checkout@v2
       
     - name: Docker Build
-      run: |
-          docker build -t qr_menu_backend .
-          docker run -d -p 9010:5000 qr_menu_backend
+      run: docker build -t qr_menu_backend .
+
+    - name: Docker Run
+      run: docker run -d -p 9010:5000 --name qr_menu_backend qr_menu_backend

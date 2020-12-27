@@ -1,6 +1,12 @@
-FROM node:12.18.1
-WORKDIR ./qr_menu_backend/WIX3004_QR_Menu_App_Backend/WIX3004_QR_Menu_App_Backend
-RUN ls
+FROM node:13.12.0-alpine
+RUN apk add --no-cache nodejs npm
+
+WORKDIR /app
+COPY package.json /app
+RUN npm install npm@latest
+
+RUN npm install -g node-gyp
 RUN npm install
-ENV NODE_ENV=production
-RUN npm start
+EXPOSE 5000
+COPY . /app
+CMD ["npm","start"]
