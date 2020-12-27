@@ -19,4 +19,4 @@ jobs:
       
     - name: Copy env file
       run: |
-        cp ./root/actions-runner/.env ./root/actions-runner/qr_menu_backend/WIX3004_QR_Menu_App_Backend/WIX3004_QR_Menu_App_Backend
+        ls
