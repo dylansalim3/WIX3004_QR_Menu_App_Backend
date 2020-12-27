@@ -17,6 +17,19 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       
-    - name: Copy env file
-      run: |
-        ls
+    - name: Make envfile
+      uses: SpicyPizza/create-envfile@v1
+      with:
+        envkey_NODE_ENV: "development"
+        envkey_email_service: "gmail"
+        envkey_client_id: ${{ secrets.client_id }}
+        envkey_client_secret: ${{ secrets.client_secret }}
+        envkey_refresh_token: ${{ secrets.refresh_token }}
+        envkey_sender_email: ${{ secrets.sender_email }}
+        envkey_db_table_name: ${{ secrets.db_table_name }}
+        envkey_db_username: ${{ secrets.db_username }}
+        envkey_db_password: ${{ secrets.db_password }}
+        envkey_db_host: ${{ secrets.db_host }}
+        envkey_db_port: ${{ secrets.db_port }}
+        envkey_db_dialect: ${{ secrets.db_dialect }}
+        envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
