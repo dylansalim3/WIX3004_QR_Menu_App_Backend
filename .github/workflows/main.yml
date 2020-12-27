@@ -20,4 +20,4 @@ jobs:
     - name: Docker Build
       run: |
           docker build -t qr_menu_backend .
-          docker run -d -p 5000:9010 qr_menu_backend
+          docker run -d -p 9010:5000 qr_menu_backend
