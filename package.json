@@ -4,7 +4,7 @@
   "description": "QR App Backend",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "npm i && nodemon server.js",
     "prod": "node server.js"
   },
   "author": "",

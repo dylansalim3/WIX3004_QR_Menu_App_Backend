@@ -17,8 +17,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       
-    - name: Docker Build
-      run: docker build -t qr_menu_backend .
-
-    - name: Docker Run
-      run: docker run -d -p 9010:5000 --name qr_menu_backend qr_menu_backend
+    - name: Copy env file
+      run: |
+        cp ./root/actions-runner/.env ./root/actions-runner/qr_menu_backend/WIX3004_QR_Menu_App_Backend/WIX3004_QR_Menu_App_Backend
