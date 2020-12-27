@@ -12,7 +12,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
     - uses: actions/checkout@v2
@@ -25,4 +25,4 @@ jobs:
       
     - name: Docker Build
       run: |
-          ls
+          docker build -it -p 5000:9010 qr_menu_backend
