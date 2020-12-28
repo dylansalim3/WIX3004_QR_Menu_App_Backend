@@ -13,8 +13,8 @@ exports.favoriteList = async (req, res) => {
     const { userId } = req.query;
     FavoriteRepository.getFavoriteByUserId(userId).then(async favStores => {
         const storeDetailList = await Promise.all(favStores.map(async favStore => {
-            if (favStore.customer != undefined && favStore.customer.store != undefined) {
-                let data = JSON.stringify(favStore.customer.store);
+            if (favStore.merchant != undefined && favStore.merchant.store != undefined) {
+                let data = JSON.stringify(favStore.merchant.store);
                 data = JSON.parse(data);
 
                 let averageRating = 0.0;
@@ -50,8 +50,8 @@ exports.recentStoreList = (req, res) => {
     FavoriteRepository.getRecentStoreByUserId(userId).then(async recentStores => {
 
         const storeDetailList = await Promise.all(recentStores.map(async recentStore => {
-            if (recentStore.viewed_customer != undefined && recentStore.viewed_customer.store != undefined) {
-                let data = JSON.stringify(recentStore.viewed_customer.store);
+            if (recentStore.viewed_merchant != undefined && recentStore.viewed_merchant.store != undefined) {
+                let data = JSON.stringify(recentStore.viewed_merchant.store);
                 data = JSON.parse(data);
 
                 let averageRating = 0.0;
@@ -77,4 +77,61 @@ exports.recentStoreList = (req, res) => {
         console.log(err);
         res.status(500).json({ msg: "Error occurred" });
     });
+}
+
+exports.addToFavorite = (req, res) => {
+    const { userId, storeId } = req.body;
+    try {
+        StoreRepository.getStoreByPk(storeId).then(store => {
+            if (store === null) {
+                res.status(500).json({ msg: "Error occurred" });
+                return;
+            }
+            const merchantId = store.user_id;
+            FavoriteRepository.createFavoriteStore(userId, merchantId).then(result => {
+                res.json({ msg: "Favorite Added" });
+            });
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ msg: "Error occurred" })
+    }
+}
+
+exports.deleteFavorite = (req, res) => {
+    const { userId, storeId } = req.body;
+    try {
+        StoreRepository.getStoreByPk(storeId).then(store => {
+            if (store === null) {
+                res.status(500).json({ msg: "Error occurred" });
+                return;
+            }
+            const merchantId = store.user_id;
+            FavoriteRepository.removeFavoriteStore(userId, merchantId).then(result => {
+                res.json({ msg: "Favorite Deleted" });
+            });
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ msg: "Error occurred" })
+    }
+}
+
+exports.addToRecentlyViewed = (req, res) => {
+    const { userId, storeId } = req.body;
+    try {
+        StoreRepository.getStoreByPk(storeId).then(store => {
+            if (store === null) {
+                res.status(500).json({ msg: "Error occurred" });
+                return;
+            }
+            const merchantId = store.user_id;
+            FavoriteRepository.createRecentlyViewedStore(userId, merchantId).then(result => {
+                res.json({ msg: "Recently Viewed Added" });
+            });
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ msg: "Error occurred" })
+    }
 }

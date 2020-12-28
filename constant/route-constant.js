@@ -58,3 +58,10 @@ exports.DELETE_ALL_NOTIFICATIONS = 'delete-all-notifications';
 exports.CREATE_RATING = '/create-rating';
 exports.GET_ALL_RATING_BY_STORE_ID = '/get-all-rating-by-store-id';
 exports.GET_AVERAGE_RATING_BY_STORE_ID = '/get-average-rating-by-store-id';
+
+//favorite & recently viewed
+exports.GET_FAV_LIST = "/favorite-list";
+exports.GET_RECENTLY_VIEWED_LIST = "/recently-store-list";
+exports.ADD_TO_FAV = "/add-to-favorite";
+exports.REMOVE_FAV = "/remove-favorite";
+exports.ADD_TO_RECENTLY_VIEWED = "/add-to-recently-viewed";
