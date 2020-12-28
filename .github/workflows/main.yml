@@ -33,3 +33,6 @@ jobs:
         envkey_db_port: ${{ secrets.db_port }}
         envkey_db_dialect: ${{ secrets.db_dialect }}
         envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        
+    - name: Restart Docker
+      run: docker restart 9b82294a0354
