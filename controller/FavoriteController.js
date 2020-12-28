@@ -135,3 +135,22 @@ exports.addToRecentlyViewed = (req, res) => {
         res.status(500).json({ msg: "Error occurred" })
     }
 }
+
+exports.checkIsFavorite = (req, res) => {
+    const { userId, storeId } = req.body;
+    try {
+        StoreRepository.getStoreByPk(storeId).then(store => {
+            if (store === null) {
+                res.status(500).json({ msg: "Error occurred" });
+                return;
+            }
+            const merchantId = store.user_id;
+            FavoriteRepository.getIsFavoriteMerchant(userId, merchantId).then(result => {
+                res.json({ msg: "Is Favorite", data: result });
+            });
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ msg: "Error occurred" })
+    }
+}

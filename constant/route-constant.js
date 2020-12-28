@@ -65,3 +65,4 @@ exports.GET_RECENTLY_VIEWED_LIST = "/recently-store-list";
 exports.ADD_TO_FAV = "/add-to-favorite";
 exports.REMOVE_FAV = "/remove-favorite";
 exports.ADD_TO_RECENTLY_VIEWED = "/add-to-recently-viewed";
+exports.CHECK_IS_FAV = "/check-is-favorite";
