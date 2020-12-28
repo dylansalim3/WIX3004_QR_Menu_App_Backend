@@ -120,12 +120,13 @@ exports.deleteFavorite = (req, res) => {
 exports.addToRecentlyViewed = (req, res) => {
     const { userId, storeId } = req.body;
     try {
-        StoreRepository.getStoreByPk(storeId).then(store => {
+        StoreRepository.getStoreByPk(storeId).then(async store => {
             if (store === null) {
                 res.status(500).json({ msg: "Error occurred" });
                 return;
             }
             const merchantId = store.user_id;
+            await FavoriteRepository.removeRecentlyViewedStore(userId, merchantId);
             FavoriteRepository.createRecentlyViewedStore(userId, merchantId).then(result => {
                 res.json({ msg: "Recently Viewed Added" });
             });
