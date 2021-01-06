@@ -18,7 +18,8 @@ exports.newNotification = async (receivers, title, body, activity, data) => {
     })
     const fcmTokens = await Promise.all(promises)
         .catch(console.error);
-    return sendFcmNotification(fcmTokens, {body, title, activity, data})
+    return sendFcmNotification(fcmTokens.filter(token => token !== null)
+        , {body, title, activity, data})
         .catch(console.error);
 }
 

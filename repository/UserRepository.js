@@ -107,7 +107,16 @@ exports.updateUserRole = async (userId, roleId) => {
     return user;
 }
 
-exports.updateFCM = (id, fcmToken) => {
+exports.updateFCM = async (id, fcmToken) => {
+    try {
+        const oldUser = await User.findOne({where: {fcm_token: fcmToken}});
+        if (oldUser) {
+            oldUser.fcm_token = null;
+            oldUser.save();
+        }
+    } catch (err) {
+        console.error(err);
+    }
     return User.findOne({where: {id: id}}).then(user => {
         user.fcm_token = fcmToken;
         return user.save();

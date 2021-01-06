@@ -54,7 +54,7 @@ async function sendFcmNotification(fcmTokens, notification) {
                     }
                 }
             })
-        })
+        }).then(res => console.log("fcm_response -> " + res))
     })
     return Promise.all(requests).catch(console.error)
 }
