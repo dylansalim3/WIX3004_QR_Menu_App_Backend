@@ -29,7 +29,8 @@ exports.removeRecentlyViewedStore = (userId,merchantId) =>{
 }
 
 exports.getIsFavoriteMerchant = (userId, merchantId) => {
-    return RecentlyViewedMerchant.count({ user_id: userId, merchant_id: merchantId }).then(c => {
+    return Favorite.count({where: {user_id: userId, merchant_id: merchantId}}).then(c => {
+        console.log(c);
         return c > 0;
     });
 }

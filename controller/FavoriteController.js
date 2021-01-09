@@ -138,20 +138,21 @@ exports.addToRecentlyViewed = (req, res) => {
 }
 
 exports.checkIsFavorite = (req, res) => {
-    const { userId, storeId } = req.body;
+    const {userId, storeId} = req.body;
+    console.log(userId, storeId);
     try {
         StoreRepository.getStoreByPk(storeId).then(store => {
             if (store === null) {
-                res.status(500).json({ msg: "Error occurred" });
+                res.status(500).json({msg: "Store does not exist"});
                 return;
             }
             const merchantId = store.user_id;
             FavoriteRepository.getIsFavoriteMerchant(userId, merchantId).then(result => {
-                res.json({ msg: "Is Favorite", data: result });
+                res.json({msg: "Is Favorite", data: result});
             });
         });
     } catch (err) {
         console.log(err);
-        res.status(500).json({ msg: "Error occurred" })
+        res.status(500).json({msg: "Error occurred"})
     }
 }
