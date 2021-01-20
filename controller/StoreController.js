@@ -13,19 +13,19 @@ exports.createStore = (req, res) => {
     if (file !== undefined) {
         filePath = file.path.replace(/\\/g, "/");
     }
-    const storeData = { 
-        name, 
-        address, 
-        postal_code, 
-        city, 
-        country, 
-        latitude, 
-        longitude, 
-        phone_num, 
-        user_id, 
-        open_hour, 
-        closing_hour, 
-        special_opening_note, 
+    const storeData = {
+        name,
+        address,
+        postal_code,
+        city,
+        country,
+        latitude,
+        longitude,
+        phone_num,
+        user_id,
+        open_hour,
+        closing_hour,
+        special_opening_note,
         profile_img: filePath };
 
 
@@ -109,24 +109,30 @@ exports.updateStore = (req, res) => {
     const { id, name, address, postal_code, city, country, latitude, longitude, phone_num, user_id, open_hour, closing_hour, special_opening_note } = req.body;
     const file = req.file;
     let filePath = null;
-    if (file !== undefined) {
-        filePath = file.path.replace(/\\/g, "/");
-    }
     const storeData = {
         name,
         address,
         postal_code,
         city,
         country,
-        latitude,
-        longitude,
         phone_num,
         user_id,
         open_hour,
         closing_hour,
-        special_opening_note,
-        profile_img: filePath
+        special_opening_note
     };
+    if (file !== undefined) {
+        filePath = file.path.replace(/\\/g, "/");
+        storeData['profile_img'] = filePath;
+    }
+
+    if (latitude != 0) {
+        console.log("latitude print "+latitude, longitude)
+        storeData['latitude'] = latitude;
+        storeData['longitude'] = longitude;
+    }
+
+
 
     StoreRepository.updateStore(storeData, id).then(result => {
         res.json({ msg: "The data created successfully", data: result });

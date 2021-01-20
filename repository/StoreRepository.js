@@ -29,15 +29,21 @@ exports.updateStore = (storeData, pk) => {
         } catch (err) {
 
         }
-        store.profile_img = storeData.profile_img;
+        if (storeData.profile_img !== undefined) {
+            store.profile_img = storeData.profile_img;
+        }
+
+        if (storeData.latitude != 0) {
+            store.latitude = storeData.latitude;
+            store.longitude = storeData.longitude;
+        }
 
         store.name = storeData.name;
         store.address = storeData.address;
         store.postal_code = storeData.postal_code;
         store.city = storeData.city;
         store.country = storeData.country;
-        store.latitude = storeData.latitude;
-        store.longitude = storeData.longitude;
+
         store.phone_num = storeData.phone_num;
         store.user_id = storeData.user_id;
         store.open_hour = storeData.open_hour;
